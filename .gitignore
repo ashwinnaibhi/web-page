@@ -1,0 +1,61 @@
+# ==========================
+# General
+# ==========================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.env
+venv/
+env/
+*.sqlite3
+
+# ==========================
+# Node / JavaScript
+# ==========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# ==========================
+# IDE / Editor Files
+# ==========================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ==========================
+# OS Files
+# ==========================
+ehthumbs.db
+Desktop.ini
+
+# ==========================
+# Compiled or temporary
+# ==========================
+*.exe
+*.dll
+*.out
+*.class
+
+# ==========================
+# OneDrive / Windows Sync
+# ==========================
+*.lnk
+~$*
+service_account.json
