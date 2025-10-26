@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JSSATEB Syllabus Portal</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background-color: #f3f7fc;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #004aad;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h3 {
+      color: #004aad;
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 80%;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:focus {
+      border-color: #004aad;
+      box-shadow: 0 0 5px rgba(0, 74, 173, 0.4);
+    }
+
+    .back-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    background-color: white;
+    color: #004aad;
+    border: none;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.back-button:hover {
+    background-color: #e6ecff;
+}
+
+
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <button class="back-button" onclick="window.location.href='/student'">← Dashboard</button>
+  </header>
+
+  <div class="container">
+    <h3>Select Course to View Syllabus</h3>
+
+    <form method="POST" action="/syllabus">
+      <select name="course" required>
+        <option value="" disabled selected>Select your course</option>
+        <option value="BECSE-1">B.E CSE - First Year</option>
+        <option value="BECSE-2">B.E CSE - Second Year</option>
+        <option value="BECSE-3">B.E CSE - Third Year</option>
+      </select>
+      <button type="submit">View Syllabus PDF</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 JSS Academy of Technical Education, Bengaluru
+  </footer>
+
+</body>
+</html>

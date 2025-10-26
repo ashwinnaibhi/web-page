@@ -1,0 +1,303 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--<meta charset="UTF-8">-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--<title>Upload Marks - Staff</title>-->
+<!--<style>-->
+<!--body { font-family: 'Poppins', sans-serif; background: #f3f7fc; }-->
+
+<!--.container { width: 90%; max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }-->
+<!--input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; }-->
+<!--button { padding: 8px 12px; background: #004aad; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.3s; }-->
+<!--button:hover { background: #ffb100; color: #000; }-->
+<!--.flash { padding: 10px; margin-bottom: 15px; border-radius: 6px; background: #d4edda; color: #155724; }-->
+<!--table { width: 100%; border-collapse: collapse; margin-top: 20px; }-->
+<!--table, th, td { border: 1px solid #ccc; }-->
+<!--th, td { padding: 10px; text-align: left; }-->
+<!--a { text-decoration: none; }-->
+<!--</style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--  <h2>Upload/Update Marks</h2>-->
+
+<!--  {% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--    {% if messages %}-->
+<!--      {% for category, message in messages %}-->
+<!--        <div class="flash">{{ message }}</div>-->
+<!--      {% endfor %}-->
+<!--    {% endif %}-->
+<!--  {% endwith %}-->
+
+<!--  <form method="POST">-->
+<!--    <label>Student USN</label>-->
+<!--    <input type="text" name="usn" placeholder="Enter USN" required>-->
+
+<!--    <label>Student Name</label>-->
+<!--    <input type="text" id="student_name" name="name" placeholder="Student Name" readonly>-->
+
+<!--    <label>Subject</label>-->
+<!--    <input type="text" name="subject" value="{{ subject }}" readonly>-->
+
+<!--    <label>Marks</label>-->
+<!--    <input type="number" name="marks" placeholder="Enter Marks" min="0" max="100" required>-->
+
+<!--    <button type="submit">Upload Marks</button>-->
+<!--  </form>-->
+
+<!--  <h3>All Marks ({{ subject }})</h3>-->
+<!--  <table>-->
+<!--    <tr>-->
+<!--      <th>USN</th>-->
+<!--      <th>Name</th>-->
+<!--      <th>Subject</th>-->
+<!--      <th>Marks</th>-->
+<!--      <th>Updated By</th>-->
+<!--      <th>Timestamp</th>-->
+<!--      <th>Action</th>-->
+<!--    </tr>-->
+<!--    {% for m in marks %}-->
+<!--    <tr>-->
+<!--      <td>{{ m['Student USN'] }}</td>-->
+<!--      <td>{{ m['Student Name'] }}</td>-->
+<!--      <td>{{ m['Subject'] }}</td>-->
+<!--      <td>{{ m['Marks'] }}</td>-->
+<!--      <td>{{ m['Updated By'] }}</td>-->
+<!--      <td>{{ m['Timestamp'] }}</td>-->
+<!--      <td>-->
+<!--        <a href="{{ url_for('edit_marks', row_id=loop.index) }}">-->
+<!--          <button type="button">Edit</button>-->
+<!--        </a>-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    {% endfor %}-->
+<!--  </table>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--const studentData = {-->
+<!--  {% for s in student_records %}-->
+<!--    "{{ s['USN'] }}": "{{ s['Student Name'] }}",-->
+<!--  {% endfor %}-->
+<!--};-->
+
+<!--const usnInput = document.querySelector('input[name="usn"]');-->
+<!--const nameInput = document.getElementById('student_name');-->
+
+<!--usnInput.addEventListener('input', function() {-->
+<!--    const usn = this.value.trim();-->
+<!--    if (studentData.hasOwnProperty(usn)) {-->
+<!--        nameInput.value = studentData[usn];-->
+<!--    } else {-->
+<!--        nameInput.value = '';-->
+<!--    }-->
+<!--});-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Marks - Staff</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f3f7fc;
+  margin: 0;
+}
+
+header {
+  background-color: #004aad;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+header button {
+  background: #ffb100;
+  border: none;
+  padding: 8px 16px;
+  color: #000;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+header button:hover {
+  background: #ffd36a;
+}
+
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 8px 12px;
+  background:#ad1eff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ffb100;
+  color: #000;
+}
+
+.flash {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background: #d4edda;
+  color: #155724;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+a { text-decoration: none; }
+
+/* 🎨 Custom color for Edit button */
+td button {
+  background: #ad1eff;     /* Blue edit button */
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+td button:hover {
+  background: #ffb100;     /* Gold hover */
+  color: #000;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h2>JSS Academy of Technical Education, Bengaluru</h2>
+  <button onclick="window.location.href='/staff'">⟵ Dashboard</button>
+</header>
+
+<div class="container">
+  <h2>Upload/Update Marks</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <label>Student USN</label>
+    <input type="text" name="usn" placeholder="Enter USN" required>
+
+    <label>Student Name</label>
+    <input type="text" id="student_name" name="name" placeholder="Student Name" readonly>
+
+    <label>Subject</label>
+    <input type="text" name="subject" value="{{ subject }}" readonly>
+
+    <label>Marks</label>
+    <input type="number" name="marks" placeholder="Enter Marks" min="0" max="100" required>
+
+    <button type="submit">Upload Marks</button>
+  </form>
+
+  <h3>All Marks ({{ subject }})</h3>
+  <table>
+    <tr>
+      <th>USN</th>
+      <th>Name</th>
+      <th>Subject</th>
+      <th>Marks</th>
+      <th>Updated By</th>
+      <th>Timestamp</th>
+      <th>Action</th>
+    </tr>
+    {% for m in marks %}
+    <tr>
+      <td>{{ m['Student USN'] }}</td>
+      <td>{{ m['Student Name'] }}</td>
+      <td>{{ m['Subject'] }}</td>
+      <td>{{ m['Marks'] }}</td>
+      <td>{{ m['Updated By'] }}</td>
+      <td>{{ m['Timestamp'] }}</td>
+      <td>
+        <a href="{{ url_for('edit_marks', row_id=loop.index) }}">
+          <button type="button">Edit</button>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<script>
+const studentData = {
+  {% for s in student_records %}
+    "{{ s['USN'] }}": "{{ s['Student Name'] }}",
+  {% endfor %}
+};
+
+const usnInput = document.querySelector('input[name="usn"]');
+const nameInput = document.getElementById('student_name');
+
+usnInput.addEventListener('input', function() {
+    const usn = this.value.trim();
+    if (studentData.hasOwnProperty(usn)) {
+        nameInput.value = studentData[usn];
+    } else {
+        nameInput.value = '';
+    }
+});
+</script>
+
+</body>
+</html>

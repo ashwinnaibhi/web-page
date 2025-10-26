@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Timetable</title>
+<style>
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f3f7fc;
+    margin: 0;
+    color: #333;
+}
+
+/* Header with back button */
+header {
+    background-color: #004aad;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    background-color: white;
+    color: #004aad;
+    border: none;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.back-button:hover {
+    background-color: #e6ecff;
+}
+
+/* Container */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+h3 {
+    color: #004aad;
+    margin-bottom: 15px;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #e8f1ff;
+    color: #004aad;
+}
+
+tr:nth-child(even) {
+    background-color: #f5f8ff;
+}
+
+/* Subject color tags */
+.subject {
+    font-weight: bold;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: white;
+    display: inline-block;
+    width: 100%;
+}
+
+/* 🎨 Subject-wise color mapping */
+.subject[data-subject*="CN"] { background-color: #007BFF; }     /* Blue */
+.subject[data-subject*="TOC"] { background-color: #9C27B0; }   /* Purple */
+.subject[data-subject*="RM"] { background-color: #E91E63; }    /* Pink */
+.subject[data-subject*="AI"] { background-color: #4CAF50; }    /* Green */
+.subject[data-subject*="SE"] { background-color: #FF9800; }    /* Orange */
+.subject[data-subject*="WTL"] { background-color: #2196F3; }   /* Sky Blue */
+.subject[data-subject*="EVS"] { background-color: #8BC34A; }   /* Light Green */
+.subject[data-subject*="Math"] { background-color: #FF5722; }  /* Deep Orange */
+.no-class {
+    background: linear-gradient(90deg, #ff9a9e, #fad0c4); /* pink to peach gradient */
+    color: #fff; /* white text */
+    font-style: italic;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.no-class:hover {
+    transform: scale(1.03); /* subtle hover effect */
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Hover effect */
+tbody tr:hover {
+    background-color: #d6e6ff;
+    transition: 0.2s;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <button class="back-button" onclick="window.location.href='/student'">← Dashboard</button>
+</header>
+
+<div class="container">
+    <section>
+        <h3>Timetable for {{ student_name }} - {{ course }}</h3>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        {% for day in days %}
+                        <th>{{ day }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for time in timeslots %}
+                    <tr>
+                        <td>{{ time }}</td>
+                        {% for day in days %}
+                            <td>
+                                {% if timetable[day][time] is defined and timetable[day][time] != '-' %}
+                                    <span class="subject" data-subject="{{ timetable[day][time] }}">{{ timetable[day][time] }}</span>
+                                {% else %}
+                                    <span class="no-class">NO Class</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<footer>
+    © {{ year }} JSSATE Bengaluru | Student Timetable
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSS Academy Portal Login</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Background */
+    body {
+      background: linear-gradient(135deg, #ffffff, #d7e3fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Card design */
+    .container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    /* Logo & title */
+    .logo {
+      width: 70px;
+      margin-bottom: 10px;
+    }
+    .logo-section h2 {
+      color: #004aad;
+      font-size: 16px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    /* Role selection */
+    .role-label {
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .role-options {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    /* Input fields */
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    /* Links */
+    .links {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+    .links a {
+      color: #004aad;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Login button */
+    .login-btn {
+      width: 100%;
+      background-color: #ffb100;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .login-btn:hover {
+      background-color: #0013e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-card">
+      <div class="logo-section">
+        <!-- Use Flask's url_for to load static images -->
+        <img src="{{ url_for('static', filename='images/STUDENT.jpg') }}" alt="Logo" class="logo">
+        <h2>STUDENT INFORMATION AND ACADEMIC MANAGEMENT</h2>
+      </div>
+
+      <form action="/login" method="POST">
+        <p class="role-label">I am a</p>
+        <div class="role-options">
+          <label><input type="radio" name="role" value="student"> Student</label>
+          <label><input type="radio" name="role" value="parent"> Parent</label>
+          <label><input type="radio" name="role" value="staff"> Staff</label>
+        </div>
+
+        <input type="text" name="username" placeholder="User Name" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <div class="links">
+          <a href="#">Reset Password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">LOGIN</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marks</title>
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f3f7fc; }
+.container { width: 90%; max-width: 800px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table, th, td { border: 1px solid #ccc; }
+th, td { padding: 10px; text-align: left; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Marks</h2>
+  <table>
+    <tr>
+      <th>USN</th>
+      <th>Name</th>
+      <th>Subject</th>
+      <th>Marks</th>
+      <th>Updated By</th>
+      <th>Timestamp</th>
+    </tr>
+    {% for m in marks %}
+    <tr>
+      <td>{{ m['Student USN'] }}</td>
+      <td>{{ m['Student Name'] }}</td>
+      <td>{{ m['Subject'] }}</td>
+      <td>{{ m['Marks'] }}</td>
+      <td>{{ m['Updated By'] }}</td>
+      <td>{{ m['Timestamp'] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+</body>
+</html>

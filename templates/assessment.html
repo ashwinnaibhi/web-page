@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Available MCQ Tests</title>
+<style>
+  body { font-family: Arial; background:#f0f4f7; padding:20px; }
+  h1 { text-align:center; margin-bottom:20px; }
+
+  /* Back Button */
+  .back-btn {
+    display: inline-block;
+    margin: 0 auto 30px auto;
+    padding: 8px 15px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    width: 100px;
+    text-align: center;
+  }
+  .back-btn:hover { background: #0b7dda; }
+
+  table { width: 100%; max-width: 900px; margin:auto; border-collapse: collapse; background: #fff; border-radius: 8px; overflow:hidden; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+  th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align:center; }
+  th { background: #4caf50; color: white; }
+  tr:hover { background:#f1f1f1; }
+  button { padding:8px 15px; background:#4caf50; color:white; border:none; border-radius:6px; cursor:pointer; }
+  button:hover { background:#45a049; }
+  #noTest { text-align:center; margin-top:30px; font-size:18px; color:#333; }
+</style>
+</head>
+<body>
+
+<!-- Back Button -->
+<a href="javascript:history.back()" class="back-btn">⟵Dashboard</a>
+
+<h1>Available MCQ Tests</h1>
+
+{% if tests %}
+<table>
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Lecturer</th>
+      <th>Date</th>
+      <th>Time Limit</th>
+      <th>Test Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for test in tests %}
+    <tr>
+      <td>{{ test.Subject }}</td>
+      <td>{{ test.Lecturer }}</td>
+      <td>{{ test.Date }}</td>
+      <td>{{ test['Time Limit'] }}</td>
+      <td>
+        {% if test['Test Link'] %}
+          {% set button_text = test.get('Button Text') or 'Take Test' %}
+          <a href="{{ test['Test Link'] }}" target="_blank">
+            <button>{{ button_text }}</button>
+          </a>
+        {% else %}
+          No Test
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div id="noTest">There is no test available.</div>
+{% endif %}
+
+</body>
+</html>

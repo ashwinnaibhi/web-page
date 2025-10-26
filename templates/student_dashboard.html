@@ -1,0 +1,336 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Student Dashboard - JSSATE</title>-->
+<!--  <style>-->
+<!--    body {-->
+<!--      font-family: 'Poppins', sans-serif;-->
+<!--      margin: 0;-->
+<!--      background: #f3f7fc;-->
+<!--    }-->
+
+<!--    header {-->
+<!--      background-color: #004aad;-->
+<!--      color: white;-->
+<!--      text-align: center;-->
+<!--      padding: 15px 0;-->
+<!--      position: relative;-->
+<!--    }-->
+
+<!--    /* 🔹 Logout Button */-->
+<!--    .logout-btn {-->
+<!--      position: absolute;-->
+<!--      right: 20px;-->
+<!--      top: 50%;-->
+<!--      transform: translateY(-50%);-->
+<!--      background-color: #ff4d4d;-->
+<!--      color: white;-->
+<!--      border: none;-->
+<!--      border-radius: 6px;-->
+<!--      padding: 8px 14px;-->
+<!--      cursor: pointer;-->
+<!--      font-weight: bold;-->
+<!--      transition: 0.3s;-->
+<!--      text-decoration: none;-->
+<!--    }-->
+
+<!--    .logout-btn:hover {-->
+<!--      background-color: #e60000;-->
+<!--      transform: translateY(-50%) scale(1.05);-->
+<!--    }-->
+
+<!--    .profile-card {-->
+<!--      background: white;-->
+<!--      width: 90%;-->
+<!--      max-width: 700px;-->
+<!--      margin: 20px auto;-->
+<!--      border-radius: 12px;-->
+<!--      box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      padding: 20px;-->
+<!--    }-->
+
+<!--    .profile-card img {-->
+<!--      width: 120px;-->
+<!--      height: 120px;-->
+<!--      border-radius: 50%;-->
+<!--      object-fit: cover;-->
+<!--      margin-right: 20px;-->
+<!--      border: 2px solid #004aad;-->
+<!--      background-color: #eee;-->
+<!--    }-->
+
+<!--    .profile-details h3 {-->
+<!--      margin: 5px 0;-->
+<!--      color: #004aad;-->
+<!--    }-->
+
+<!--    .profile-details p {-->
+<!--      margin: 2px 0;-->
+<!--      color: #444;-->
+<!--      font-size: 14px;-->
+<!--    }-->
+
+<!--    .dashboard {-->
+<!--      width: 90%;-->
+<!--      max-width: 900px;-->
+<!--      margin: 20px auto;-->
+<!--      display: grid;-->
+<!--      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));-->
+<!--      gap: 20px;-->
+<!--    }-->
+
+<!--    a.button-link {-->
+<!--      display: block;-->
+<!--      text-align: center;-->
+<!--      text-decoration: none;-->
+<!--      font-weight: bold;-->
+<!--      padding: 10px;-->
+<!--      border-radius: 8px;-->
+<!--      color: #fff;-->
+<!--      transition: 0.3s;-->
+<!--    }-->
+
+<!--    .login-btn { background-color: #ffb300b8; }-->
+<!--    .loginn-btn { background-color: #00d5ffd0; }-->
+<!--    .loginnn-btn { background-color: #ff0000b9; }-->
+
+<!--    .login-btn:hover, .loginn-btn:hover, .loginnn-btn:hover {-->
+<!--      transform: scale(1.05);-->
+<!--      opacity: 0.9;-->
+<!--    }-->
+
+<!--    footer {-->
+<!--      text-align: center;-->
+<!--      padding: 15px;-->
+<!--      font-size: 13px;-->
+<!--      color: #555;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--  <header>-->
+<!--    <h2>JSS Academy of Technical Education, Bengaluru</h2>-->
+<!--    &lt;!&ndash; 🔹 Logout Button &ndash;&gt;-->
+<!--    <a href="/logout" class="logout-btn">Logout</a>-->
+<!--  </header>-->
+
+<!--  <section class="profile-card">-->
+<!--    <img-->
+<!--      src="{{ student_image_url }}"-->
+<!--      alt="Student Photo"-->
+<!--      id="student-photo"-->
+<!--      onerror="this.src='/static/images/default.jpg'">-->
+
+<!--    <div class="profile-details">-->
+<!--      <h3>{{ student['Student Name'] }}</h3>-->
+<!--      <p><strong>USN:</strong> {{ student['USN'] }}</p>-->
+<!--      <p><strong>Course:</strong> {{ student['Course'] }}</p>-->
+<!--      <p><strong>Section:</strong> {{ student['Section'] }}</p>-->
+<!--    </div>-->
+<!--  </section>-->
+
+<!--  &lt;!&ndash; Dashboard Buttons &ndash;&gt;-->
+<!--  <section class="dashboard">-->
+<!--    <a href="/assessment" class="button-link login-btn">ASSESSMENT / MCQ TEST</a>-->
+<!--    <a href="/fees" class="button-link login-btn">FEES</a>-->
+<!--    <a href="/attendance" class="button-link loginn-btn">STUDENT ATTENDANCE</a>-->
+<!--    <a href="/grievance" class="button-link loginn-btn">GRIEVANCE</a>-->
+<!--    <a href="/timetable" class="button-link loginnn-btn">STUDENT TIME TABLE</a>-->
+<!--    <a href="/syllabus" class="button-link loginnn-btn">SYLLABUS</a>-->
+<!--  </section>-->
+
+<!--  <footer>-->
+<!--    &copy; 2025 JSS Academy of Technical Education, Bengaluru-->
+<!--  </footer>-->
+
+<!--  &lt;!&ndash; 🔍 Debug Script (Optional for testing) &ndash;&gt;-->
+<!--  <script>-->
+<!--    console.log("Loaded student image URL:", "{{ student_image_url }}");-->
+<!--    const img = document.getElementById('student-photo');-->
+<!--    img.onload = () => console.log("✅ Student image loaded successfully");-->
+<!--    img.onerror = () => console.error("❌ Failed to load student image");-->
+<!--  </script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - JSSATE</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f3f7fc;
+    }
+
+    header {
+      background-color: #004aad;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      position: relative;
+    }
+
+    /* Buttons in header */
+    .header-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      text-decoration: none;
+      color: white;
+    }
+
+    .back-btn {
+      right: 140px;
+      background-color: #4caf50;
+    }
+
+    .back-btn:hover {
+      background-color: #45a049;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .logout-btn {
+      right: 20px;
+      background-color: #ff4d4d;
+    }
+
+    .logout-btn:hover {
+      background-color: #e60000;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .profile-card {
+      background: white;
+      width: 90%;
+      max-width: 700px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .profile-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+      border: 2px solid #004aad;
+      background-color: #eee;
+    }
+
+    .profile-details h3 {
+      margin: 5px 0;
+      color: #004aad;
+    }
+
+    .profile-details p {
+      margin: 2px 0;
+      color: #444;
+      font-size: 14px;
+    }
+
+    .dashboard {
+      width: 90%;
+      max-width: 900px;
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    a.button-link {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .login-btn { background-color: #ffb300b8; }
+    .loginn-btn { background-color: #00d5ffd0; }
+    .loginnn-btn { background-color: #ff0000b9; }
+
+    .login-btn:hover, .loginn-btn:hover, .loginnn-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+
+
+
+    <!-- Logout -->
+    <a href="/logout" class="header-btn logout-btn">Logout</a>
+  </header>
+
+  <section class="profile-card">
+    <img
+      src="{{ student_image_url }}"
+      alt="Student Photo"
+      id="student-photo"
+      onerror="this.src='/static/images/default.jpg'">
+
+    <div class="profile-details">
+      <h3>{{ student['Student Name'] }}</h3>
+      <p><strong>USN:</strong> {{ student['USN'] }}</p>
+      <p><strong>Course:</strong> {{ student['Course'] }}</p>
+      <p><strong>Section:</strong> {{ student['Section'] }}</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Buttons -->
+  <section class="dashboard">
+    <a href="/assessment" class="button-link login-btn">ASSESSMENT / MCQ TEST</a>
+    <a href="/fees" class="button-link login-btn">FEES</a>
+    <a href="/attendance" class="button-link loginn-btn">STUDENT ATTENDANCE</a>
+    <a href="/marks" class="button-link loginn-btn">VIEW MARKS</a>
+    <a href="/timetable" class="button-link loginnn-btn">STUDENT TIME TABLE</a>
+    <a href="/syllabus" class="button-link loginnn-btn">SYLLABUS</a>
+  </section>
+
+  <footer>
+    &copy; 2025 JSS Academy of Technical Education, Bengaluru
+  </footer>
+
+  <script>
+    const img = document.getElementById('student-photo');
+    img.onload = () => console.log("✅ Student image loaded successfully");
+    img.onerror = () => console.error("❌ Failed to load student image");
+  </script>
+
+</body>
+</html>

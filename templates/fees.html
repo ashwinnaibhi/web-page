@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Fee Portal</title>
+<style>
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f3f7fc;
+    margin: 0;
+    color: #333;
+}
+
+header {
+    background-color: #004aad;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+.back-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    background-color: white;
+    color: #004aad;
+    border: none;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.back-button:hover {
+    background-color: #e6ecff;
+}
+
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+h3 {
+    color: #004aad;
+    margin-bottom: 10px;
+}
+
+input, select {
+    padding: 10px;
+    width: 250px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #e8f1ff;
+    color: #004aad;
+}
+
+tr:nth-child(even) {
+    background-color: #f5f8ff;
+}
+
+.status-done {
+    background-color: #c8f7c5;
+    color: green;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.status-pending {
+    background-color: #f8d7da;
+    color: red;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 25px;
+    padding: 20px;
+    background: #e0f0ff;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.summary div {
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-color: #f5faff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.summary .pending {
+    background-color: #ffe6e6;
+    color: red;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Hover effect for table rows */
+tbody tr:hover {
+    background-color: #d6e6ff;
+    transition: 0.2s;
+}
+</style>
+</head>
+<body>
+
+
+<header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <a href="{% if role == 'parent' %}{{ url_for('parent_dashboard') }}{% else %}{{ url_for('student_dashboard') }}{% endif %}?student_usn={{ usn }}">
+        <button class="back-button">← Dashboard</button>
+    </a>
+</header>
+
+
+<div class="container">
+    <section>
+        <h3>Student Fees for</h3>
+        <!-- Show logged-in student name only -->
+        <input type="text" value="{{ student_name }} - {{ course }}" disabled>
+
+        <!-- Year/Semester Filter -->
+        <select id="sem_filter" onchange="filterFees()">
+            {% for y in years %}
+            <option value="{{ y }}" {% if y == sem_or_year %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+    </section>
+
+    <section class="table-wrapper">
+        <h3>Payment Status</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ref Date</th>
+                    <th>Ref #</th>
+                    <th>Title</th>
+                    <th>Amount (₹)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="fees_table">
+                {% for d in demands %}
+                <tr>
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.ref_date }}</td>
+                    <td>{{ d.ref_no }}</td>
+                    <td>{{ d.title }}</td>
+                    <td>₹{{ d.amount }}</td>
+                    <td>
+                        {% if d.status|lower == 'done' %}
+                            <span class="status-done">Done</span>
+                        {% else %}
+                            <span class="status-pending">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="summary">
+        <div>
+            <p>Total Fees</p>
+            <p>₹{{ total_fees }}</p>
+        </div>
+        <div>
+            <p>Fees Paid</p>
+            <p>₹{{ paid_fees }}</p>
+        </div>
+        <div class="pending">
+            <p>Pending Fees</p>
+            <p>₹{{ pending_fees }}</p>
+        </div>
+    </section>
+</div>
+
+<footer>
+    © {{ year }} JSSATE Bengaluru | Student Fee Portal
+</footer>
+
+<script>
+function filterFees() {
+    const sel = document.getElementById('sem_filter').value;
+    window.location.href = `/fees?year=${sel}`;
+}
+</script>
+
+</body>
+</html>

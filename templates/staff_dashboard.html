@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard - JSSATE</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f3f7fc;
+    }
+
+    header {
+      background-color: #004aad;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      position: relative; /* Required for absolute positioning of logout button */
+    }
+
+    /* Logout Button */
+    .logout-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+    .logout-btn:hover {
+      background-color: #e60000;
+      transform: scale(1.05);
+    }
+
+    /* Profile Card */
+    .profile-card {
+      background: white;
+      width: 90%;
+      max-width: 700px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+
+    .profile-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+
+    .profile-details h3 {
+      margin: 5px 0;
+      color: #004aad;
+    }
+
+    .profile-details p {
+      margin: 3px 0;
+      color: #444;
+      font-size: 14px;
+    }
+
+    /* Dashboard Section */
+    .dashboard {
+      width: 90%;
+      max-width: 900px;
+      margin: 25px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .dashboard button {
+      background-color: #004aad;
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dashboard button:hover {
+      background-color: #ffb100;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .profile-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-card img {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </header>
+
+  <!-- Staff Info -->
+  <section class="profile-card">
+    <img src="staff_photo.jpg" alt="Staff Photo">
+    <div class="profile-details">
+      <h3>Prof. Ananya Ramesh</h3>
+      <p><strong>Staff ID:</strong> JSSCS045</p>
+      <p><strong>Department:</strong> Computer Science & Engineering</p>
+      <p><strong>Subject:</strong> Web Technologies</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Buttons -->
+  <section class="dashboard">
+    <a href="{{ url_for('update_student_attendance') }}"><button>STUDENT ATTENDANCE</button></a>
+<!--    <a href="{{ url_for('view_marks') }}"><button>UPLOAD MARKS</button></a>-->
+    <a href="{{ url_for('upload_marks') }}"><button>UPLOAD MARKS</button></a>
+
+
+    <button>CLASS TIME TABLE</button>
+    <button>SYLLABUS UPLOAD</button>
+
+  </section>
+
+</body>
+</html>

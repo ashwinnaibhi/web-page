@@ -1,0 +1,361 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Parent Dashboard - JSSATE</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: 'Poppins', sans-serif;-->
+<!--            margin: 0;-->
+<!--            background: #f3f7fc;-->
+<!--        }-->
+
+<!--        header {-->
+<!--            background-color: #004aad;-->
+<!--            color: white;-->
+<!--            text-align: center;-->
+<!--            padding: 15px 0;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        /* Logout Button */-->
+<!--        .logout-btn {-->
+<!--            position: absolute;-->
+<!--            right: 20px;-->
+<!--            top: 50%;-->
+<!--            transform: translateY(-50%);-->
+<!--            background-color: #ff4d4d;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 6px;-->
+<!--            padding: 8px 14px;-->
+<!--            cursor: pointer;-->
+<!--            font-weight: bold;-->
+<!--            transition: 0.3s;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+
+<!--        .logout-btn:hover {-->
+<!--            background-color: #e60000;-->
+<!--            transform: translateY(-50%) scale(1.05);-->
+<!--        }-->
+
+<!--        .profile-card,-->
+<!--        .address-card {-->
+<!--            background: white;-->
+<!--            width: 90%;-->
+<!--            max-width: 700px;-->
+<!--            margin: 20px auto;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .profile-card img {-->
+<!--            width: 100px;-->
+<!--            height: 100px;-->
+<!--            border-radius: 50%;-->
+<!--            object-fit: cover;-->
+<!--            margin-right: 20px;-->
+<!--        }-->
+
+<!--        .profile-details h3 {-->
+<!--            margin: 5px 0;-->
+<!--            color: #004aad;-->
+<!--        }-->
+
+<!--        .profile-details p {-->
+<!--            margin: 3px 0;-->
+<!--            color: #444;-->
+<!--            font-size: 14px;-->
+<!--        }-->
+
+<!--        .dashboard {-->
+<!--            width: 90%;-->
+<!--            max-width: 700px;-->
+<!--            margin: 25px auto;-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--            justify-content: space-around;-->
+<!--            gap: 15px;-->
+<!--        }-->
+
+<!--        .dashboard button {-->
+<!--            flex: 1 1 200px;-->
+<!--            background-color: #004aad;-->
+<!--            color: white;-->
+<!--            font-weight: bold;-->
+<!--            padding: 12px;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            cursor: pointer;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .dashboard button:hover {-->
+<!--            background-color: #ffb100;-->
+<!--            color: #000;-->
+<!--        }-->
+
+<!--        footer {-->
+<!--            text-align: center;-->
+<!--            padding: 15px;-->
+<!--            font-size: 13px;-->
+<!--            color: #555;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        @media (max-width: 600px) {-->
+<!--            .profile-card {-->
+<!--                flex-direction: column;-->
+<!--                text-align: center;-->
+<!--            }-->
+
+<!--            .profile-card img {-->
+<!--                margin-bottom: 15px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <header>-->
+<!--        <h2>JSS Academy of Technical Education, Bengaluru</h2>-->
+<!--        <p>Welcome, {{ parent_name }}</p>-->
+<!--        <a href="/logout" class="logout-btn">Logout</a>-->
+<!--    </header>-->
+
+<!--    &lt;!&ndash; Student Selection Dropdown &ndash;&gt;-->
+<!--    <section class="address-card">-->
+<!--        <form method="get" action="{{ url_for('parent_dashboard') }}">-->
+<!--            <label for="student_usn"><strong>Select Student:</strong></label>-->
+<!--            <select name="student_usn" onchange="this.form.submit()">-->
+<!--                {% for student in students %}-->
+<!--                    <option value="{{ student.USN }}" {% if student.USN == selected_student.USN %}selected{% endif %}>-->
+<!--                        {{ student["Student Name"] }} ({{ student.USN }})-->
+<!--                    </option>-->
+<!--                {% endfor %}-->
+<!--            </select>-->
+<!--        </form>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; Student Info &ndash;&gt;-->
+<!--    <section class="profile-card">-->
+<!--        <img src="{{ student_image_url }}" alt="Student Photo">-->
+<!--        <div class="profile-details">-->
+<!--            <h3>{{ selected_student["Student Name"] }}</h3>-->
+<!--            <p><strong>USN:</strong> {{ selected_student["USN"] }}</p>-->
+<!--            <p><strong>Course:</strong> {{ selected_student["Course"] }}</p>-->
+<!--            <p><strong>Section:</strong> {{ selected_student.get("Section", "N/A") }}</p>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; Parent Details &ndash;&gt;-->
+<!--    <section class="address-card">-->
+<!--        <p><strong>ADDRESS:</strong> {{ selected_student.get("Address", "N/A") }}</p>-->
+<!--        <p><strong>FATHER NAME:</strong> {{ selected_student.get("Father Name", "N/A") }}</p>-->
+<!--        <p><strong>MOTHER NAME:</strong> {{ selected_student.get("Mother Name", "N/A") }}</p>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; Dashboard Buttons &ndash;&gt;-->
+<!--    <section class="dashboard">-->
+<!--        <a href="{{ url_for('attendance_page', student_id=selected_student['USN']) }}">-->
+<!--            <button>STUDENT ATTENDANCE</button>-->
+<!--        </a>-->
+<!--        <a href="{{ url_for('show_fees') }}?usn={{ selected_student['USN'] }}">-->
+<!--            <button>FEES</button>-->
+<!--        </a>-->
+<!--        <button>REMARK</button>-->
+<!--    </section>-->
+
+<!--    <footer>-->
+<!--        &copy; {{ year }} JSS Academy of Technical Education, Bengaluru-->
+<!--    </footer>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parent Dashboard - JSSATE</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        background: #f3f7fc;
+    }
+
+    header {
+        background-color: #004aad;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        position: relative;
+    }
+
+    /* Logout Button */
+    .logout-btn {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .logout-btn:hover {
+        background-color: #e60000;
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    .profile-card,
+    .address-card {
+        background: white;
+        width: 90%;
+        max-width: 700px;
+        margin: 20px auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .profile-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profile-details h3 {
+        margin: 5px 0;
+        color: #004aad;
+    }
+
+    .profile-details p {
+        margin: 3px 0;
+        color: #444;
+        font-size: 14px;
+    }
+
+    /* Dashboard buttons */
+    .dashboard {
+        width: 90%;
+        max-width: 700px;
+        margin: 25px auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 15px;
+    }
+
+    .dashboard button {
+        flex: 1 1 200px;
+        background-color: #004aad;
+        color: white;
+        font-weight: bold;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .dashboard button:hover {
+        background-color: #ffb100;
+        color: #000;
+    }
+
+    footer {
+        text-align: center;
+        padding: 15px;
+        font-size: 13px;
+        color: #555;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .profile-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-card img {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <p>Welcome, {{ parent_name }}</p>
+    <a href="/logout" class="logout-btn">Logout</a>
+</header>
+
+<!-- Student Selection Dropdown -->
+<section class="address-card">
+    <form method="get" action="{{ url_for('parent_dashboard') }}">
+        <label for="student_usn"><strong>Select Student:</strong></label>
+        <select name="student_usn" onchange="this.form.submit()">
+            {% for student in students %}
+                <option value="{{ student.USN }}" {% if student.USN == selected_student.USN %}selected{% endif %}>
+                    {{ student["Student Name"] }} ({{ student.USN }})
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</section>
+
+<!-- Student Info -->
+<section class="profile-card">
+    <img src="{{ student_image_url }}" alt="Student Photo">
+    <div class="profile-details">
+        <h3>{{ selected_student["Student Name"] }}</h3>
+        <p><strong>USN:</strong> {{ selected_student["USN"] }}</p>
+        <p><strong>Course:</strong> {{ selected_student["Course"] }}</p>
+        <p><strong>Section:</strong> {{ selected_student.get("Section", "N/A") }}</p>
+    </div>
+</section>
+
+<!-- Parent / Address Details -->
+<section class="address-card">
+    <p><strong>ADDRESS:</strong> {{ selected_student.get("Address", "N/A") }}</p>
+    <p><strong>FATHER NAME:</strong> {{ selected_student.get("Father Name", "N/A") }}</p>
+    <p><strong>MOTHER NAME:</strong> {{ selected_student.get("Mother Name", "N/A") }}</p>
+</section>
+
+<!-- Dashboard Buttons -->
+<section class="dashboard">
+    <a href="{{ url_for('attendance_page', student_id=selected_student['USN']) }}">
+        <button>STUDENT ATTENDANCE</button>
+    </a>
+   <a href="{{ url_for('show_fees') }}?usn={{ selected_student['USN'] }}&role=parent">
+        <button>FEES</button>
+    </a>
+    <a href="{{ url_for('view_marks') }}?usn={{ selected_student['USN'] }}&role=parent">
+        <button>VIEW MARKS</button>
+    </a>
+    <button>REMARK</button>
+</section>
+
+<footer>
+    &copy; {{ year }} JSS Academy of Technical Education, Bengaluru
+</footer>
+
+</body>
+</html>

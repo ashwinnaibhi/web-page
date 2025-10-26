@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attendance Tracker - JSSATE</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f3f7fc;
+  margin: 0;
+  text-align: center;
+}
+header {
+  background: #004aad;
+  color: #fff;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.95em;
+}
+#dashboardButton { background: linear-gradient(90deg, #6f42c1, #5a32a3); }
+#dashboardButton:hover { background: linear-gradient(90deg, #5a32a3, #6f42c1); }
+#prevWeekButton, #nextWeekButton { background: linear-gradient(90deg, #003366, #0055aa); }
+#prevWeekButton:hover, #nextWeekButton:hover { background: linear-gradient(90deg, #0055aa, #003366); }
+#changeDateButton { background: linear-gradient(90deg, #28a745, #45c45f); }
+#changeDateButton:hover { background: linear-gradient(90deg, #45c45f, #28a745); }
+#summaryButton { background: linear-gradient(90deg, #ffb300, #ff9800); }
+#summaryButton:hover { background: linear-gradient(90deg, #ff9800, #ffb300); }
+section {
+  margin: 30px auto;
+  max-width: 1100px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: left;
+}
+.controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.week-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+input[type="date"] {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95em;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 0.9em;
+}
+th { background-color: #004aad; color: white; }
+.present { background-color: #d1ffd1; color: green; font-weight: bold; }
+.absent { background-color: #ffd1d1; color: red; font-weight: bold; }
+.holiday { background-color: #f0f0f0; color: #999; font-weight: bold; font-style: italic; }
+.noclass { background-color: #f9f9f9; color: #666; font-style: italic; }
+.summary-section { margin-top: 25px; display: none; animation: fadeIn 0.4s ease-in-out; }
+.summary-section th { background: #ffb300; color: white; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: translateY(0);} }
+h3 { text-align: center; margin-top: 10px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h2>Student Attendance Dashboard</h2>
+  <div>
+    <!-- Updated back button -->
+    <button id="dashboardButton" onclick="window.location.href='{% if role == 'parent' %}{{ url_for('parent_dashboard') }}{% else %}{{ url_for('student_dashboard') }}{% endif %}?student_id={{ student_id }}'">⟵ Dashboard</button>
+  </div>
+</header>
+
+<section>
+  <div class="controls-row">
+    <div class="week-controls">
+      <button id="prevWeekButton" onclick="changeDate(-7)">⏪ Prev Week</button>
+      <input type="date" id="datePicker">
+      <button id="changeDateButton" onclick="loadAttendance()">Update date</button>
+      <button id="nextWeekButton" onclick="changeDate(7)">Next Week ⏩</button>
+    </div>
+    <button id="summaryButton" onclick="toggleSummary()">Show Overall Summary</button>
+  </div>
+
+  <h3 id="weekRange"></h3>
+
+  <table id="attendanceTable">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>9:00–10:00</th>
+        <th>10:00–11:00</th>
+        <th>11:00–12:00</th>
+        <th>12:00–1:00</th>
+        <th>2:00–3:00</th>
+        <th>3:00–4:00</th>
+        <th>4:00–5:00</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="summary-section" id="summarySection">
+    <h3>Overall Attendance Summary</h3>
+    <table id="summaryTable">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Total Classes</th>
+          <th>Attended</th>
+          <th>Attendance %</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+let currentDate = new Date();
+document.getElementById('datePicker').valueAsDate = currentDate;
+let lastRecords = [];
+let summaryVisible = false;
+
+// Remove old goDashboard function
+function formatDate(date) { return date.toISOString().split('T')[0]; }
+function changeDate(days) {
+  currentDate.setDate(currentDate.getDate() + days);
+  document.getElementById('datePicker').valueAsDate = currentDate;
+  loadAttendance();
+}
+
+async function loadAttendance() {
+  const dateStr = document.getElementById('datePicker').value;
+  try {
+    const studentId = "{{ student_id }}";  // Flask will fill this
+    const response = await fetch(`/get_attendance_till/${dateStr}?student_id=${studentId}`);
+    const data = await response.json();
+    if (data.error) { alert(data.error); return; }
+
+    lastRecords = data.records;
+    const tbody = document.querySelector("#attendanceTable tbody");
+    tbody.innerHTML = "";
+
+    const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const times = ["9:00-10:00","10:00-11:00","11:00-12:00","12:00-1:00","2:00-3:00","3:00-4:00","4:00-5:00"];
+
+    const endDate = new Date(dateStr);
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 6);
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + i);
+      const dayStr = formatDate(d);
+      const records = lastRecords.filter(r => r.date === dayStr);
+      const isSunday = d.getDay() === 0;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${daysOfWeek[d.getDay()]}<br>${dayStr}</td>`;
+
+      times.forEach(time => {
+        if (isSunday) {
+          row.innerHTML += `<td class="holiday" colspan="1">Holiday</td>`;
+        } else {
+          const record = records.find(r => r.time === time);
+          if (record) {
+            if (!record.subject || record.subject === '-') {
+              row.innerHTML += `<td class="noclass">No Class</td>`;
+            } else {
+              const cls = record.status === "Present" ? "present" : "absent";
+              row.innerHTML += `<td class="${cls}">${record.subject}<br>${record.status}</td>`;
+            }
+          } else {
+            row.innerHTML += `<td class="noclass">No Class</td>`;
+          }
+        }
+      });
+
+      tbody.appendChild(row);
+    }
+
+    document.getElementById('weekRange').textContent = `Showing last 7 days till ${dateStr}`;
+    summaryVisible = false;
+    document.getElementById('summarySection').style.display = 'none';
+    document.getElementById('summaryButton').textContent = 'Show Overall Summary';
+
+  } catch(err) { console.error(err); alert("Failed to load attendance."); }
+}
+
+function toggleSummary() {
+  summaryVisible = !summaryVisible;
+  const section = document.getElementById('summarySection');
+  const btn = document.getElementById('summaryButton');
+  if (summaryVisible) { populateSummary(); section.style.display = 'block'; btn.textContent = 'Hide Overall Summary'; }
+  else { section.style.display = 'none'; btn.textContent = 'Show Overall Summary'; }
+}
+
+function populateSummary() {
+  if (!lastRecords.length) return;
+
+  const summaryMap = {};
+  lastRecords.forEach(record => {
+    const subj = record.subject;
+    if (!subj || subj === '-') return;
+    if (!summaryMap[subj]) summaryMap[subj] = { total: 0, present: 0 };
+    summaryMap[subj].total++;
+    if (record.status === "Present") summaryMap[subj].present++;
+  });
+
+  const sbody = document.querySelector("#summaryTable tbody");
+  sbody.innerHTML = "";
+
+  Object.keys(summaryMap).forEach(subj => {
+    const s = summaryMap[subj];
+    const percent = ((s.present / s.total) * 100).toFixed(1);
+    sbody.innerHTML += `<tr>
+      <td>${subj}</td>
+      <td>${s.total}</td>
+      <td>${s.present}</td>
+      <td>${percent}%</td>
+    </tr>`;
+  });
+}
+
+loadAttendance();
+</script>
+</body>
+</html>
