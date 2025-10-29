@@ -774,51 +774,86 @@ def show_fees():
     )
 
 
+# @app.route("/timetable")
+# def timetable():
+#     # Fetch all records from Google Sheet
+#     all_records = WORKSHEET_TIMETABLE.get_all_records()
+#
+#     if not all_records:
+#         return "No timetable data found."
+#
+#     # Build set of weekdays and timeslots
+#     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+#     timeslots = sorted(list({rec["Time"] for rec in all_records if rec.get("Time")}))
+#
+#     # Initialize timetable as empty grid
+#     timetable_data = {day: {t: "-" for t in timeslots} for day in weekdays}
+#
+#     for rec in all_records:
+#         date_str = rec.get("Date")
+#         time = rec.get("Time")
+#         subject = rec.get("Subject", "")
+#         lecturer = rec.get("Lecturer", "")
+#
+#         # Validate data
+#         if not date_str or not time:
+#             continue
+#
+#         # Try converting date → weekday
+#         try:
+#             # Works for both "2025-10-25" and "25-Oct-2025"
+#             try:
+#                 date_obj = datetime.strptime(date_str, "%d-%b-%Y")
+#             except ValueError:
+#                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+#
+#             day_name = date_obj.strftime("%A")
+#         except Exception:
+#             continue
+#
+#         if day_name in timetable_data:
+#             timetable_data[day_name][time] = f"{subject} ({lecturer})" if lecturer else subject
+#
+#     # Render page
+#     return render_template(
+#         "timetable.html",
+#         student_name="JSS Student",
+#         course="CSE",
+#         timetable=timetable_data,
+#         timeslots=timeslots,
+#         days=weekdays,
+#         year=datetime.now().year
+#     )
+
 @app.route("/timetable")
 def timetable():
-    # Fetch all records from Google Sheet
+    # Fetch fixed timetable from Google Sheet
     all_records = WORKSHEET_TIMETABLE.get_all_records()
 
     if not all_records:
         return "No timetable data found."
 
-    # Build set of weekdays and timeslots
+    # Expected columns
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    timeslots = sorted(list({rec["Time"] for rec in all_records if rec.get("Time")}))
 
-    # Initialize timetable as empty grid
-    timetable_data = {day: {t: "-" for t in timeslots} for day in weekdays}
+    # Extract timeslots directly from the sheet (the first column)
+    timeslots = [row.get("Day/Time") for row in all_records if row.get("Day/Time")]
 
-    for rec in all_records:
-        date_str = rec.get("Date")
-        time = rec.get("Time")
-        subject = rec.get("Subject", "")
-        lecturer = rec.get("Lecturer", "")
+    # Initialize timetable data
+    timetable_data = {day: {} for day in weekdays}
 
-        # Validate data
-        if not date_str or not time:
+    for row in all_records:
+        time = row.get("Day/Time")
+        if not time:
             continue
+        for day in weekdays:
+            subject = row.get(day, "").strip()
+            timetable_data[day][time] = subject if subject else "-"
 
-        # Try converting date → weekday
-        try:
-            # Works for both "2025-10-25" and "25-Oct-2025"
-            try:
-                date_obj = datetime.strptime(date_str, "%d-%b-%Y")
-            except ValueError:
-                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-
-            day_name = date_obj.strftime("%A")
-        except Exception:
-            continue
-
-        if day_name in timetable_data:
-            timetable_data[day_name][time] = f"{subject} ({lecturer})" if lecturer else subject
-
-    # Render page
     return render_template(
         "timetable.html",
-        student_name="JSS Student",
-        course="CSE",
+        student_name=session.get("student_name", "JSS Student"),
+        course=session.get("course", "CSE"),
         timetable=timetable_data,
         timeslots=timeslots,
         days=weekdays,
