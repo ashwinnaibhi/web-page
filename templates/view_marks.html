@@ -5,17 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marks</title>
 <style>
-body { font-family: 'Poppins', sans-serif; background: #f3f7fc; }
-.container { width: 90%; max-width: 800px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-table, th, td { border: 1px solid #ccc; }
-th, td { padding: 10px; text-align: left; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f3f7fc;
+  margin: 0;
+}
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+table, th, td {
+  border: 1px solid #ccc;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+.back-btn {
+  display: inline-block;
+  background: #004aad;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: #ffb100;
+  color: #000;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
+
   <h2>Marks</h2>
+
   <table>
     <tr>
       <th>USN</th>

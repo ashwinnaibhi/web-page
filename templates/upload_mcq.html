@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload MCQ Test - Staff</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f3f7fc;
+    margin: 0;
+  }
+
+  header {
+    background: #004aad;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+  }
+
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 500;
+  }
+
+  input[type="text"], input[type="date"], input[type="url"], input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 20px;
+    background: #004aad;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  button:hover { background: #003b8e; }
+
+  .back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 15px;
+    background: #2196f3;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+  .back-btn:hover { background: #0b7dda; }
+
+  .success, .error {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 500;
+  }
+
+  .success { color: green; }
+  .error { color: red; }
+</style>
+</head>
+<body>
+  <header>Upload MCQ Test</header>
+  <div class="container">
+    <a href="javascript:history.back()" class="back-btn">⟵ Dashboard</a>
+    <h2>Enter Test Details</h2>
+
+    {% if message %}
+      <div class="{{ 'success' if success else 'error' }}">{{ message }}</div>
+    {% endif %}
+
+    <form action="/upload_mcq" method="POST">
+      <label>Subject:</label>
+<select name="subject" required>
+  {% for sub in subjects %}
+  <option value="{{ sub }}">{{ sub }}</option>
+  {% endfor %}
+</select>
+
+
+      <label>Date:</label>
+      <input type="date" name="date" required>
+
+      <label>Time Limit (in minutes):</label>
+      <input type="number" name="time_limit" min="1" required>
+
+      <label>Test Link (URL):</label>
+      <input type="url" name="test_link" placeholder="https://..." required>
+
+      <label>Button Text (optional):</label>
+      <input type="text" name="button_text" placeholder="e.g., Start Quiz">
+
+      <button type="submit">Upload Test</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -23,6 +23,7 @@ WORKSHEET_PARENTS = CLIENT.open(SHEET_NAME).worksheet("Parents")
 WORKSHEET_STUDENTS = CLIENT.open(SHEET_NAME).worksheet("Students")
 WORKSHEET_Teachers = CLIENT.open(SHEET_NAME).worksheet("Teachers")
 WORKSHEET_MARKS = CLIENT.open(SHEET_NAME).worksheet("Marks")
+WORKSHEET_USERS = CLIENT.open(SHEET_NAME).worksheet("Users")
 
 # IMAGE_FOLDER = r"C:\Users\Ashwin Kumar N S\OneDrive\Desktop\projects\web_page\templates"
 
@@ -31,21 +32,24 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PDF_FOLDER = os.path.join(BASE_DIR, "Templates")  # Folder containing syllabus PDFs
 
 # --- Sample user database (for login demo) ---
-users = {
-   "parent1": {"password": "parent123", "role": "parent"},
-    "student1": {"password": "12345", "role": "student"},
-    "student2": {"password": "23456", "role": "student"},
-    "staff1": {"password": "abcde", "role": "staff"},
-    "staff2": {"password": "bcdef", "role": "staff"},
-    "staff3": {"password": "cdefg", "role": "staff"},
-    "staff4": {"password": "defgh", "role": "staff"},
-    "staff5": {"password": "efghi", "role": "staff"},
-    "staff6": {"password": "fghij", "role": "staff"},
-    "staff7": {"password": "ghijk", "role": "staff"}
+# users = {
+#     "parent1": {"password": "parent123", "role": "parent", "email": "parent1@gmail.com"},
+#     "parent2": {"password": "parent124", "role": "parent", "email": "parent2@gmail.com"},
+#     "student1": {"password": "234567", "role": "student", "email": "ashwinkumarnsrao@gmail.com"},
+#     "student2": {"password": "23456", "role": "student", "email": "student2@gmail.com"},
+#     "staff1": {"password": "abcde", "role": "staff", "email": "staff1@gmail.com"},
+#     "staff2": {"password": "bcdef", "role": "staff", "email": "staff2@gmail.com"},
+#     "staff3": {"password": "cdefg", "role": "staff", "email": "staff3@gmail.com"},
+#     "staff4": {"password": "defgh", "role": "staff", "email": "staff4@gmail.com"},
+#     "staff5": {"password": "efghi", "role": "staff", "email": "staff5@gmail.com"},
+#     "staff6": {"password": "fghij", "role": "staff", "email": "staff6@gmail.com"},
+#     "staff7": {"password": "ghijk", "role": "staff", "email": "staff7@gmail.com"}
+# }
 
-}
-
-
+def get_user_from_sheet(username):
+    """Fetch user record from Users sheet"""
+    users_data = WORKSHEET_USERS.get_all_records()
+    return next((u for u in users_data if u["Username"] == username), None)
 
 # --- Subjects and Time Slots ---
 subjects = ["RM", "CN", "TOC", "AI", "SE", "EVS", "WTL"]
@@ -60,23 +64,82 @@ def login_page():
 
 
 
+# @app.route('/login', methods=['POST'])
+# def login():
+#     user_id = request.form['username']
+#     password = request.form['password']
+#     role_selected = request.form['role']
+#
+#     if user_id in users and users[user_id]['password'] == password:
+#         user_role = users[user_id]['role']
+#         if user_role != role_selected:
+#             return "<h3>Role mismatch. Please choose the correct role.</h3>"
+#
+#         # Save session
+#         session['user_id'] = user_id
+#         session['role'] = user_role
+#
+#         # --- For students, fetch USN & info from Google Sheet ---
+#         if user_role == "student":
+#             all_students = WORKSHEET_FEES.get_all_records()
+#             student_info = next((s for s in all_students if s["USN"] == user_id), None)
+#
+#             if student_info:
+#                 session['usn'] = student_info["USN"]
+#                 session['student_name'] = student_info["Student Name"]
+#                 session['course'] = student_info["Course"]
+#             else:
+#                 # fallback if not found
+#                 session['usn'] = user_id
+#                 session['student_name'] = user_id
+#                 session['course'] = "B.E CSE"
+#
+#         # --- For staff, fetch their subject from Staff sheet ---
+#         if user_role == "staff":
+#             all_staff = WORKSHEET_Teachers.get_all_records()
+#             staff_info = next((s for s in all_staff if s["Staff ID"] == user_id), None)
+#             if staff_info:
+#                 session['staff_name'] = staff_info["Professor Name"]
+#                 session['subject'] = staff_info["Subject"]
+#             else:
+#                 session['staff_name'] = user_id
+#                 session['subject'] = None  # fallback if not found
+#
+#         # Redirect to dashboard
+#         if user_role == 'student':
+#             return redirect(url_for('student_dashboard'))
+#         elif user_role == 'staff':
+#             return redirect(url_for('staff_dashboard'))
+#         elif user_role == 'parent':
+#             return redirect(url_for('parent_dashboard'))
+#     else:
+#         return "<h3>Invalid ID or Password! Please try again.</h3>"
+
 @app.route('/login', methods=['POST'])
 def login():
     user_id = request.form['username']
     password = request.form['password']
     role_selected = request.form['role']
 
-    if user_id in users and users[user_id]['password'] == password:
-        user_role = users[user_id]['role']
-        if user_role != role_selected:
+    # --- Fetch all users from Google Sheet ---
+    all_users = WORKSHEET_USERS.get_all_records()  # your Google Sheet tab name: "users"
+
+    # --- Find matching user from sheet ---
+    user = next((u for u in all_users if u['Username'] == user_id and u['Password'] == password), None)
+
+    if user:
+        user_role = user['Role']
+
+        # --- Check if selected role matches role in sheet ---
+        if user_role.lower() != role_selected.lower():
             return "<h3>Role mismatch. Please choose the correct role.</h3>"
 
-        # Save session
+        # --- Save user info to session ---
         session['user_id'] = user_id
         session['role'] = user_role
 
-        # --- For students, fetch USN & info from Google Sheet ---
-        if user_role == "student":
+        # --- If student, fetch student info from student sheet ---
+        if user_role.lower() == "student":
             all_students = WORKSHEET_FEES.get_all_records()
             student_info = next((s for s in all_students if s["USN"] == user_id), None)
 
@@ -85,37 +148,58 @@ def login():
                 session['student_name'] = student_info["Student Name"]
                 session['course'] = student_info["Course"]
             else:
-                # fallback if not found
                 session['usn'] = user_id
                 session['student_name'] = user_id
                 session['course'] = "B.E CSE"
 
-        # --- For staff, fetch their subject from Staff sheet ---
-        if user_role == "staff":
+        # --- If staff, fetch subject info from Staff sheet ---
+        elif user_role.lower() == "staff":
             all_staff = WORKSHEET_Teachers.get_all_records()
             staff_info = next((s for s in all_staff if s["Staff ID"] == user_id), None)
+
             if staff_info:
                 session['staff_name'] = staff_info["Professor Name"]
                 session['subject'] = staff_info["Subject"]
             else:
                 session['staff_name'] = user_id
-                session['subject'] = None  # fallback if not found
+                session['subject'] = None
 
-        # Redirect to dashboard
-        if user_role == 'student':
+        # --- Redirect based on role ---
+        if user_role.lower() == 'student':
             return redirect(url_for('student_dashboard'))
-        elif user_role == 'staff':
+        elif user_role.lower() == 'staff':
             return redirect(url_for('staff_dashboard'))
-        elif user_role == 'parent':
+        elif user_role.lower() == 'parent':
             return redirect(url_for('parent_dashboard'))
     else:
         return "<h3>Invalid ID or Password! Please try again.</h3>"
+
 
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login_page'))
+
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'POST':
+        username = request.form['username'].strip()
+        new_password = request.form['new_password'].strip()
+
+        users = WORKSHEET_USERS.get_all_records()
+        for idx, u in enumerate(users, start=2):  # +2 because headers are in row 1
+            if u['Username'].lower() == username.lower():
+                WORKSHEET_USERS.update_cell(idx, 2, new_password)  # Password is column 2
+                flash(f"✅ Password updated successfully for {username}!", "success")
+                return redirect(url_for('reset_password'))
+
+        flash("❌ Username not found. Please try again.", "error")
+        return redirect(url_for('reset_password'))
+
+    return render_template('reset_password.html')
+
 
 
 @app.route('/student')
@@ -264,6 +348,42 @@ def assessment_page():
     all_tests.sort(key=lambda x: x.get('Date', ''))
 
     return render_template('assessment.html', tests=all_tests)
+
+@app.route('/upload_mcq', methods=['GET', 'POST'])
+def upload_mcq():
+    # Check if logged in and staff
+    if 'user_id' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_page'))
+
+    lecturer_name = session.get('user_id')  # Assuming staff ID or name is stored
+
+    if request.method == 'POST':
+        subject = request.form['subject']
+        date = request.form['date']
+        time_limit = request.form['time_limit']
+        test_link = request.form['test_link']
+        button_text = request.form.get('button_text', 'Take Test')
+
+        # Create a test record
+        new_test = {
+            'Subject': subject,
+            'Lecturer': lecturer_name,
+            'Date': date,
+            'Time Limit': f"{time_limit} mins",
+            'Test Link': test_link,
+            'Button Text': button_text
+        }
+
+        # Append to Google Sheet
+        WORKSHEET_MCQ.append_row(list(new_test.values()))
+
+        return render_template('upload_mcq.html',
+                               message="Test uploaded successfully!",
+                               success=True)
+
+    return render_template('upload_mcq.html')
+
+
 
 
 
