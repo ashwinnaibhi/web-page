@@ -97,12 +97,7 @@
 
     <form action="/upload_mcq" method="POST">
       <label>Subject:</label>
-<select name="subject" required>
-  {% for sub in subjects %}
-  <option value="{{ sub }}">{{ sub }}</option>
-  {% endfor %}
-</select>
-
+      <input type="text" name="subject" value="{{ subject }}" readonly>
 
       <label>Date:</label>
       <input type="date" name="date" required>

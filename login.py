@@ -269,13 +269,44 @@ def drive_link_to_direct(url):
         return '/static/images/default.jpg'
 
 
-@app.route('/staff')
-def staff_dashboard():
-    if 'user_id' not in session or session.get('role') != 'staff':
-        return redirect(url_for('login_page'))
-    return render_template('staff_dashboard.html')
+# @app.route('/staff')
+# def staff_dashboard():
+#     if 'user_id' not in session or session.get('role') != 'staff':
+#         return redirect(url_for('login_page'))
+#     return render_template('staff_dashboard.html')
 
 #
+
+@app.route('/staff')
+def staff_dashboard():
+    # Check login and role
+    if 'user_id' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_page'))
+
+    staff_id = session.get('user_id')
+
+    # Fetch staff info from Google Sheet
+    staff_data = WORKSHEET_Teachers.get_all_records()  # Make sure STAFF_SHEET is defined
+    staff_info = next((s for s in staff_data if s.get('Staff ID') == staff_id), None)
+
+    if not staff_info:
+        return render_template('staff_dashboard.html',
+                               error_message="Staff details not found in the sheet.")
+
+    # Use your helper for Drive link conversion
+    photo_url = drive_link_to_direct(staff_info.get('PhotoURL', ''))
+
+    return render_template(
+        'staff_dashboard.html',
+        staff_name=staff_info.get('Professor Name'),
+        staff_id=staff_info.get('Staff ID'),
+        subject=staff_info.get('Subject'),
+        department=staff_info.get('Department'),
+        photo_url=photo_url
+    )
+
+
+
 @app.route('/parent')
 def parent_dashboard():
     if 'user_id' not in session or session.get('role') != 'parent':
@@ -349,16 +380,66 @@ def assessment_page():
 
     return render_template('assessment.html', tests=all_tests)
 
+# @app.route('/upload_mcq', methods=['GET', 'POST'])
+# def upload_mcq():
+#     # Check if logged in and staff
+#     if 'user_id' not in session or session.get('role') != 'staff':
+#         return redirect(url_for('login_page'))
+#
+#     lecturer_name = session.get('user_id')  # Assuming staff ID or name is stored
+#
+#     if request.method == 'POST':
+#         subject = request.form['subject']
+#         date = request.form['date']
+#         time_limit = request.form['time_limit']
+#         test_link = request.form['test_link']
+#         button_text = request.form.get('button_text', 'Take Test')
+#
+#         # Create a test record
+#         new_test = {
+#             'Subject': subject,
+#             'Lecturer': lecturer_name,
+#             'Date': date,
+#             'Time Limit': f"{time_limit} mins",
+#             'Test Link': test_link,
+#             'Button Text': button_text
+#         }
+#
+#         # Append to Google Sheet
+#         WORKSHEET_MCQ.append_row(list(new_test.values()))
+#
+#         return render_template('upload_mcq.html',
+#                                message="Test uploaded successfully!",
+#                                success=True)
+#
+#     return render_template('upload_mcq.html')
+
 @app.route('/upload_mcq', methods=['GET', 'POST'])
 def upload_mcq():
-    # Check if logged in and staff
+    # Ensure user is logged in and is staff
     if 'user_id' not in session or session.get('role') != 'staff':
         return redirect(url_for('login_page'))
 
-    lecturer_name = session.get('user_id')  # Assuming staff ID or name is stored
+    lecturer_id = session.get('user_id')
+
+    # Fetch teacher data from Google Sheet
+    teachers_data = WORKSHEET_Teachers.get_all_records()
+    lecturer_subject = None
+    lecturer_name = None
+
+    # Find the logged-in teacher’s subject
+    for t in teachers_data:
+        if t.get('Staff ID') == lecturer_id:
+            lecturer_subject = t.get('Subject')
+            lecturer_name = t.get('Professor Name')
+            break
+
+    if not lecturer_subject:
+        return render_template('upload_mcq.html',
+                               message="No subject assigned to your account.",
+                               success=False)
 
     if request.method == 'POST':
-        subject = request.form['subject']
         date = request.form['date']
         time_limit = request.form['time_limit']
         test_link = request.form['test_link']
@@ -366,7 +447,7 @@ def upload_mcq():
 
         # Create a test record
         new_test = {
-            'Subject': subject,
+            'Subject': lecturer_subject,
             'Lecturer': lecturer_name,
             'Date': date,
             'Time Limit': f"{time_limit} mins",
@@ -379,10 +460,11 @@ def upload_mcq():
 
         return render_template('upload_mcq.html',
                                message="Test uploaded successfully!",
-                               success=True)
+                               success=True,
+                               subject=lecturer_subject)
 
-    return render_template('upload_mcq.html')
-
+    return render_template('upload_mcq.html',
+                           subject=lecturer_subject)
 
 
 

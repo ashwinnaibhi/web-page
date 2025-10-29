@@ -16,10 +16,9 @@
       color: white;
       text-align: center;
       padding: 15px 0;
-      position: relative; /* Required for absolute positioning of logout button */
+      position: relative;
     }
 
-    /* Logout Button */
     .logout-btn {
       position: absolute;
       top: 15px;
@@ -39,7 +38,6 @@
       transform: scale(1.05);
     }
 
-    /* Profile Card */
     .profile-card {
       background: white;
       width: 90%;
@@ -72,7 +70,6 @@
       font-size: 14px;
     }
 
-    /* Dashboard Section */
     .dashboard {
       width: 90%;
       max-width: 900px;
@@ -125,31 +122,29 @@
     <a href="/logout" class="logout-btn">Logout</a>
   </header>
 
+  {% if error_message %}
+  <div style="text-align:center;color:red;margin-top:20px;">{{ error_message }}</div>
+  {% else %}
   <!-- Staff Info -->
   <section class="profile-card">
-    <img src="staff_photo.jpg" alt="Staff Photo">
+    <img src="{{ photo_url }}" alt="Staff Photo">
     <div class="profile-details">
-      <h3>Prof. Ananya Ramesh</h3>
-      <p><strong>Staff ID:</strong> JSSCS045</p>
-      <p><strong>Department:</strong> Computer Science & Engineering</p>
-      <p><strong>Subject:</strong> Web Technologies</p>
+      <h3>{{ staff_name }}</h3>
+      <p><strong>Staff ID:</strong> {{ staff_id }}</p>
+      <p><strong>Department:</strong> {{ department }}</p>
+      <p><strong>Subject:</strong> {{ subject }}</p>
     </div>
   </section>
 
   <!-- Dashboard Buttons -->
   <section class="dashboard">
     <a href="{{ url_for('update_student_attendance') }}"><button>STUDENT ATTENDANCE</button></a>
-<!--    <a href="{{ url_for('view_marks') }}"><button>UPLOAD MARKS</button></a>-->
     <a href="{{ url_for('upload_marks') }}"><button>UPLOAD MARKS</button></a>
-
-    <a href="/upload_mcq">
-  <button>Upload MCQ Test</button>
-  </a>
-
+    <a href="/upload_mcq"><button>Upload MCQ Test</button></a>
     <button>CLASS TIME TABLE</button>
     <button>SYLLABUS UPLOAD</button>
-
   </section>
+  {% endif %}
 
 </body>
 </html>
