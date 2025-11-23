@@ -15,7 +15,7 @@ CREDS = ServiceAccountCredentials.from_json_keyfile_name("service_account.json",
 CLIENT = gspread.authorize(CREDS)
 
 SHEET_NAME = "Student_DB"
-WORKSHEET_ATTENDANCE = CLIENT.open(SHEET_NAME).worksheet("Attendence")
+WORKSHEET_ATTENDANCE = CLIENT.open(SHEET_NAME).worksheet("student_attendence")
 WORKSHEET_FEES = CLIENT.open(SHEET_NAME).worksheet("Fees")
 WORKSHEET_TIMETABLE = CLIENT.open(SHEET_NAME).worksheet("Timetable")
 WORKSHEET_MCQ = CLIENT.open(SHEET_NAME).worksheet("MCQ")
@@ -1262,6 +1262,7 @@ def update_student_attendance():
 #     subject_marks = [m for m in all_marks if m['Subject'] == subject]
 #
 #     return render_template('upload_marks.html', marks=subject_marks, subject=subject, student_records=student_records)
+
 
 @app.route('/staff/upload_marks', methods=['GET', 'POST'])
 def upload_marks():
