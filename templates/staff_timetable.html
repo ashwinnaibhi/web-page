@@ -1,0 +1,245 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--<meta charset="UTF-8">-->
+<!--<title>{{ subject }} Timetable - Staff</title>-->
+<!--<style>-->
+<!--  body {-->
+<!--    font-family: 'Poppins', sans-serif;-->
+<!--    background: #f3f7fc;-->
+<!--    margin: 0;-->
+<!--    padding: 20px;-->
+<!--  }-->
+<!--  h1 {-->
+<!--    text-align: center;-->
+<!--    color: #004aad;-->
+<!--  }-->
+<!--  table {-->
+<!--    width: 95%;-->
+<!--    margin: 20px auto;-->
+<!--    border-collapse: collapse;-->
+<!--    background: white;-->
+<!--    box-shadow: 0 0 8px rgba(0,0,0,0.1);-->
+<!--    border-radius: 10px;-->
+<!--    overflow: hidden;-->
+<!--  }-->
+<!--  th, td {-->
+<!--    border: 1px solid #ccc;-->
+<!--    padding: 12px;-->
+<!--    text-align: center;-->
+<!--  }-->
+<!--  th {-->
+<!--    background: #004aad;-->
+<!--    color: white;-->
+<!--  }-->
+<!--  tr:nth-child(even) {-->
+<!--    background: #f9f9f9;-->
+<!--  }-->
+<!--  .no-class {-->
+<!--    background: linear-gradient(90deg, #ff9a9e, #fad0c4);-->
+<!--    color: white;-->
+<!--    font-weight: bold;-->
+<!--    border-radius: 6px;-->
+<!--    padding: 6px;-->
+<!--  }-->
+<!--</style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--  <h1>{{ subject }} Timetable</h1>-->
+
+<!--  <table>-->
+<!--    <thead>-->
+<!--      <tr>-->
+<!--        <th>Day / Time</th>-->
+<!--        {% for time in timeslots %}-->
+<!--          <th>{{ time }}</th>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--    </thead>-->
+
+<!--    <tbody>-->
+<!--      {% for day in days %}-->
+<!--      <tr>-->
+<!--        <td><strong>{{ day }}</strong></td>-->
+<!--        {% for time in timeslots %}-->
+<!--          <td>-->
+<!--            {% if timetable[day][time] and timetable[day][time] != "NO CLASS" %}-->
+<!--              {{ timetable[day][time] }}-->
+<!--            {% else %}-->
+<!--              <span class="no-class">NO CLASS</span>-->
+<!--            {% endif %}-->
+<!--          </td>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--      {% endfor %}-->
+<!--    </tbody>-->
+<!--  </table>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Timetable</title>
+<style>
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f3f7fc;
+    margin: 0;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #004aad;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;
+}
+.back-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    background-color: white;
+    color: #004aad;
+    border: none;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.back-button:hover {
+    background-color: #e6ecff;
+}
+
+/* Container */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+h3 {
+    color: #004aad;
+    margin-bottom: 15px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+table th {
+    background-color: #e8f1ff;
+    color: #004aad;
+}
+tr:nth-child(even) {
+    background-color: #f5f8ff;
+}
+
+/* Subject colors */
+.subject {
+    font-weight: bold;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: white;
+    display: inline-block;
+    width: 100%;
+}
+.subject[data-subject*="CN"] { background-color: #007BFF; }
+.subject[data-subject*="TOC"] { background-color: #9C27B0; }
+.subject[data-subject*="RM"] { background-color: #E91E63; }
+.subject[data-subject*="AI"] { background-color: #4CAF50; }
+.subject[data-subject*="SE"] { background-color: #FF9800; }
+.subject[data-subject*="WTL"] { background-color: #2196F3; }
+.subject[data-subject*="EVS"] { background-color: #8BC34A; }
+.subject[data-subject*="Math"] { background-color: #FF5722; }
+
+.no-class {
+    background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+    color: #fff;
+    font-style: italic;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.no-class:hover {
+    transform: scale(1.03);
+}
+tbody tr:hover {
+    background-color: #d6e6ff;
+    transition: 0.2s;
+}
+footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    color: #555;
+    font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h2>JSS Academy of Technical Education, Bengaluru</h2>
+    <button class="back-button" onclick="window.location.href='/staff'">← Dashboard</button>
+</header>
+
+<div class="container">
+    <section>
+        <h3>Timetable</h3>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day / Time</th>
+                        {% for time in timeslots %}
+                        <th>{{ time }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in days %}
+                    <tr>
+                        <td><strong>{{ day }}</strong></td>
+                        {% for time in timeslots %}
+                            <td>
+                                {% if timetable[day][time] is defined and timetable[day][time] != '-' %}
+                                    <span class="subject" data-subject="{{ timetable[day][time] }}">{{ timetable[day][time] }}</span>
+                                {% else %}
+                                    <span class="no-class">NO Class</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

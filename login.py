@@ -307,25 +307,64 @@ def staff_dashboard():
 
 
 
+# @app.route('/parent')
+# def parent_dashboard():
+#     if 'user_id' not in session or session.get('role') != 'parent':
+#         return redirect(url_for('login_page'))
+#     parent_id = session['user_id']
+#     # --- Fetch parent info from Parents sheet ---
+#     all_parents = WORKSHEET_PARENTS.get_all_records()
+#     parent_info = next((p for p in all_parents if p["ParentID"] == parent_id), None)
+#     if not parent_info: return "<h3>No parent record found!</h3>"
+#
+#     # --- Get linked students USNs ---
+#     linked_usns = [usn.strip()
+#                    for usn in parent_info.get("Linked Students (USN)", "").split(",")
+#                    if usn.strip()]
+#     if not linked_usns: return "<h3>No students linked to this parent!</h3>"
+#     # --- Fetch student info from Students sheet ---
+#     all_students = WORKSHEET_STUDENTS.get_all_records()
+#     students_info = [s for s in all_students if s["USN"] in linked_usns]
+#     if not students_info: return "<h3>No students linked to this parent!</h3>"
+#
+#     # --- Selected student (default to first linked student) ---
+#     selected_usn = request.args.get("student_usn") or students_info[0]["USN"]
+#     selected_student = next((s for s in students_info if s["USN"] == selected_usn), students_info[0])
+#
+#     # --- Student photo URL ---
+#     default_image = '/static/images/default.jpg'
+#     photo_url = selected_student.get('PhotoURL', '').strip()
+#     if photo_url:
+#         student_image_url = drive_link_to_direct(photo_url)
+#     else:
+#         student_image_url = default_image
+#     return render_template('parent_dashboard.html', parent_name=parent_info.get("Parent Name"),
+#                                students=students_info, selected_student=selected_student,
+#                                student_image_url=student_image_url, year=datetime.now().year)
 @app.route('/parent')
 def parent_dashboard():
     if 'user_id' not in session or session.get('role') != 'parent':
         return redirect(url_for('login_page'))
     parent_id = session['user_id']
+
     # --- Fetch parent info from Parents sheet ---
     all_parents = WORKSHEET_PARENTS.get_all_records()
     parent_info = next((p for p in all_parents if p["ParentID"] == parent_id), None)
-    if not parent_info: return "<h3>No parent record found!</h3>"
+    if not parent_info:
+        return "<h3>No parent record found!</h3>"
 
     # --- Get linked students USNs ---
     linked_usns = [usn.strip()
                    for usn in parent_info.get("Linked Students (USN)", "").split(",")
                    if usn.strip()]
-    if not linked_usns: return "<h3>No students linked to this parent!</h3>"
+    if not linked_usns:
+        return "<h3>No students linked to this parent!</h3>"
+
     # --- Fetch student info from Students sheet ---
     all_students = WORKSHEET_STUDENTS.get_all_records()
     students_info = [s for s in all_students if s["USN"] in linked_usns]
-    if not students_info: return "<h3>No students linked to this parent!</h3>"
+    if not students_info:
+        return "<h3>No students linked to this parent!</h3>"
 
     # --- Selected student (default to first linked student) ---
     selected_usn = request.args.get("student_usn") or students_info[0]["USN"]
@@ -338,9 +377,16 @@ def parent_dashboard():
         student_image_url = drive_link_to_direct(photo_url)
     else:
         student_image_url = default_image
-    return render_template('parent_dashboard.html', parent_name=parent_info.get("Parent Name"),
-                               students=students_info, selected_student=selected_student,
-                               student_image_url=student_image_url, year=datetime.now().year)
+
+    return render_template(
+        'parent_dashboard.html',
+        parent_name=parent_info.get("Parent Name"),
+        students=students_info,
+        selected_student=selected_student,
+        student_image_url=student_image_url,
+        year=datetime.now().year
+    )
+
 
 @app.route('/syllabus', methods=['GET', 'POST'])
 def syllabus_page():
@@ -366,6 +412,31 @@ def syllabus_page():
             return f"❌ File not found: {file_path}", 404
 
     return render_template('syllabus.html')
+
+@app.route('/staff_syllabus', methods=['GET', 'POST'])
+def staff_syllabus_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+
+    syllabus_files = {
+        'BECSE-1': 'syllabus_becse1.pdf',
+        'BECSE-2': 'syllabus_becse2.pdf',
+        'BECSE-3': 'syllabus_becse3.pdf'
+    }
+
+    if request.method == 'POST':
+        course = request.form.get('course')
+        filename = syllabus_files.get(course)
+        if not filename:
+            return "❌ Invalid course selected", 400
+
+        file_path = os.path.join(PDF_FOLDER, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(PDF_FOLDER, filename)
+        else:
+            return f"❌ File not found: {file_path}", 404
+
+    return render_template('staff_syllabus.html')
 
 @app.route('/assessment')
 def assessment_page():
@@ -465,7 +536,6 @@ def upload_mcq():
 
     return render_template('upload_mcq.html',
                            subject=lecturer_subject)
-
 
 
 
@@ -583,11 +653,11 @@ def mark_attendance():
     return jsonify({'message': 'Attendance recorded successfully!'}), 201
 
 # --- FEES: Fetch from Google Sheet ---
-def get_fees_from_sheet(student_id):
-    """Fetch all fee details for a specific student from Google Sheet."""
-    all_records = WORKSHEET_FEES.get_all_records()
-    student_records = [r for r in all_records if r['student_id'] == student_id]
-    return student_records
+# def get_fees_from_sheet(student_id):
+#     """Fetch all fee details for a specific student from Google Sheet."""
+#     all_records = WORKSHEET_FEES.get_all_records()
+#     student_records = [r for r in all_records if r['student_id'] == student_id]
+#     return student_records
 
 
 # @app.route("/fees")
@@ -773,6 +843,13 @@ def show_fees():
         usn=usn  # pass USN for back link
     )
 
+# --- FEES: Fetch from Google Sheet ---
+def get_fees_from_sheet(student_id):
+    """Fetch all fee details for a specific student from Google Sheet."""
+    all_records = WORKSHEET_FEES.get_all_records()
+    student_records = [r for r in all_records if r['student_id'] == student_id]
+    return student_records
+
 
 # @app.route("/timetable")
 # def timetable():
@@ -825,40 +902,122 @@ def show_fees():
 #         year=datetime.now().year
 #     )
 
+# @app.route("/timetable")
+# def timetable():
+#     # Fetch fixed timetable from Google Sheet
+#     all_records = WORKSHEET_TIMETABLE.get_all_records()
+#
+#     if not all_records:
+#         return "No timetable data found."
+#
+#     # Expected columns
+#     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+#
+#     # Extract timeslots directly from the sheet (the first column)
+#     timeslots = [row.get("Day/Time") for row in all_records if row.get("Day/Time")]
+#
+#     # Initialize timetable data
+#     timetable_data = {day: {} for day in weekdays}
+#
+#     for row in all_records:
+#         time = row.get("Day/Time")
+#         if not time:
+#             continue
+#         for day in weekdays:
+#             subject = row.get(day, "").strip()
+#             timetable_data[day][time] = subject if subject else "-"
+#
+#     return render_template(
+#         "timetable.html",
+#         student_name=session.get("student_name", "JSS Student"),
+#         course=session.get("course", "CSE"),
+#         timetable=timetable_data,
+#         timeslots=timeslots,
+#         days=weekdays,
+#         year=datetime.now().year
+#     )
+
+# from datetime import datetime
+# from flask import render_template, session
+
 @app.route("/timetable")
 def timetable():
-    # Fetch fixed timetable from Google Sheet
+    # Fetch timetable data from Google Sheet
     all_records = WORKSHEET_TIMETABLE.get_all_records()
 
     if not all_records:
         return "No timetable data found."
 
-    # Expected columns
-    weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    # Extract time slots from the first row keys (excluding 'Day/Time')
+    first_row = all_records[0]
+    timeslots = [col for col in first_row.keys() if col != "Day/Time"]
 
-    # Extract timeslots directly from the sheet (the first column)
-    timeslots = [row.get("Day/Time") for row in all_records if row.get("Day/Time")]
+    # Extract all weekdays (the values under 'Day/Time')
+    days = [row["Day/Time"] for row in all_records if row.get("Day/Time")]
 
-    # Initialize timetable data
-    timetable_data = {day: {} for day in weekdays}
+    # Initialize timetable dictionary
+    timetable_data = {}
 
+    # Build the dictionary: timetable[day][time] = subject
     for row in all_records:
-        time = row.get("Day/Time")
-        if not time:
+        day = row.get("Day/Time")
+        if not day:
             continue
-        for day in weekdays:
-            subject = row.get(day, "").strip()
+        timetable_data[day] = {}
+        for time in timeslots:
+            subject = row.get(time, "").strip()
             timetable_data[day][time] = subject if subject else "-"
 
+    # Render HTML
     return render_template(
         "timetable.html",
         student_name=session.get("student_name", "JSS Student"),
         course=session.get("course", "CSE"),
         timetable=timetable_data,
         timeslots=timeslots,
-        days=weekdays,
+        days=days,
         year=datetime.now().year
     )
+
+@app.route("/staff_timetable")
+def staff_timetable():
+    # Fetch timetable data
+    all_records = WORKSHEET_TIMETABLE.get_all_records()
+
+    if not all_records:
+        return "No timetable data found."
+
+    # Extract time slots from first row keys (excluding 'Day/Time')
+    first_row = all_records[0]
+    timeslots = [col for col in first_row.keys() if col != "Day/Time"]
+
+    # Extract weekdays
+    days = [row["Day/Time"] for row in all_records if row.get("Day/Time")]
+
+    # Build timetable dictionary
+    timetable_data = {}
+
+    for row in all_records:
+        day = row.get("Day/Time")
+        if not day:
+            continue
+
+        timetable_data[day] = {}
+
+        for time in timeslots:
+            subject = row.get(time, "").strip()
+            timetable_data[day][time] = subject if subject else "-"
+
+    # Render staff timetable HTML
+    return render_template(
+        "staff_timetable.html",
+        timetable=timetable_data,
+        timeslots=timeslots,
+        days=days,
+        staff_name=session.get("staff_name", "Staff"),
+        year=datetime.now().year
+    )
+
 
 @app.route('/get_attendance_till/<date_str>', methods=['GET'])
 def get_attendance_till(date_str):
@@ -890,58 +1049,58 @@ def get_attendance_till(date_str):
 
     return jsonify({"records": filtered_records})
 
-@app.route('/staff/attendance', methods=['GET', 'POST'])
-def update_student_attendance():
-    if 'user_id' not in session or session.get('role') != 'staff':
-        return redirect(url_for('login_page'))
-
-    staff_subject = session.get('subject')
-    all_records = WORKSHEET_ATTENDANCE.get_all_records()
-    records = [r for r in all_records if r['Subject'] == staff_subject]
-
-    # Track updated IDs in session
-    updated_ids = session.get('updated_ids', set())
-    if isinstance(updated_ids, list):
-        updated_ids = set(updated_ids)
-
-    if request.method == 'POST':
-        try:
-            row_id = int(request.form.get('row_id'))
-            new_status = request.form.get('status')
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Debug
-            print("DEBUG: row_id", row_id, "new_status", new_status)
-
-            record_to_update = records[row_id]
-            record_id = record_to_update['ID']
-
-            all_ids = [r['ID'] for r in all_records]
-            sheet_row = all_ids.index(record_id) + 2  # +2 for header row
-
-            # Update Status and Timestamp in Google Sheet
-            WORKSHEET_ATTENDANCE.update(f'F{sheet_row}:G{sheet_row}', [[new_status, timestamp]])
-
-            updated_ids.add(record_id)
-            session['updated_ids'] = list(updated_ids)
-
-            # Return JSON if AJAX request
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': True, 'row_id': row_id, 'UpdateStatus': '✅ Updated', 'Timestamp': timestamp})
-
-            flash(f"Attendance updated for StudentID {record_to_update['StudentID']}", 'success')
-        except Exception as e:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'error': str(e)})
-            flash(f"Error updating attendance: {str(e)}", 'error')
-
-        return redirect(url_for('update_student_attendance'))
-
-    # Mark each record "Updated" or "Not Updated"
-    for r in records:
-        r['UpdateStatus'] = "✅ Updated" if r['ID'] in updated_ids else "⏳ Not Updated"
-
-    return render_template('update_student_attendance.html', records=records, subject=staff_subject)
+# @app.route('/staff/attendance', methods=['GET', 'POST'])
+# def update_student_attendance():
+#     if 'user_id' not in session or session.get('role') != 'staff':
+#         return redirect(url_for('login_page'))
+#
+#     staff_subject = session.get('subject')
+#     all_records = WORKSHEET_ATTENDANCE.get_all_records()
+#     records = [r for r in all_records if r['Subject'] == staff_subject]
+#
+#     # Track updated IDs in session
+#     updated_ids = session.get('updated_ids', set())
+#     if isinstance(updated_ids, list):
+#         updated_ids = set(updated_ids)
+#
+#     if request.method == 'POST':
+#         try:
+#             row_id = int(request.form.get('row_id'))
+#             new_status = request.form.get('status')
+#             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#             # Debug
+#             print("DEBUG: row_id", row_id, "new_status", new_status)
+#
+#             record_to_update = records[row_id]
+#             record_id = record_to_update['ID']
+#
+#             all_ids = [r['ID'] for r in all_records]
+#             sheet_row = all_ids.index(record_id) + 2  # +2 for header row
+#
+#             # Update Status and Timestamp in Google Sheet
+#             WORKSHEET_ATTENDANCE.update(f'F{sheet_row}:G{sheet_row}', [[new_status, timestamp]])
+#
+#             updated_ids.add(record_id)
+#             session['updated_ids'] = list(updated_ids)
+#
+#             # Return JSON if AJAX request
+#             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#                 return jsonify({'success': True, 'row_id': row_id, 'UpdateStatus': '✅ Updated', 'Timestamp': timestamp})
+#
+#             flash(f"Attendance updated for StudentID {record_to_update['StudentID']}", 'success')
+#         except Exception as e:
+#             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#                 return jsonify({'success': False, 'error': str(e)})
+#             flash(f"Error updating attendance: {str(e)}", 'error')
+#
+#         return redirect(url_for('update_student_attendance'))
+#
+#     # Mark each record "Updated" or "Not Updated"
+#     for r in records:
+#         r['UpdateStatus'] = "✅ Updated" if r['ID'] in updated_ids else "⏳ Not Updated"
+#
+#     return render_template('update_student_attendance.html', records=records, subject=staff_subject)
 
 
 
@@ -986,6 +1145,123 @@ def update_student_attendance():
 #
 #     return render_template('upload_marks.html', marks=all_marks)
 
+@app.route('/staff/attendance', methods=['GET', 'POST'])
+def update_student_attendance():
+    if 'user_id' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_page'))
+
+    staff_subject = session.get('subject')
+    all_records = WORKSHEET_ATTENDANCE.get_all_records()
+    records = [r for r in all_records if r['Subject'] == staff_subject]
+
+    # Unique dates
+    unique_dates = sorted(list({r['Date'] for r in records}))
+
+    # Track updated IDs
+    updated_ids = session.get('updated_ids', set())
+    if isinstance(updated_ids, list):
+        updated_ids = set(updated_ids)
+
+    if request.method == 'POST':
+        try:
+            date = request.form.get('date')
+            student = request.form.get('student')
+            new_status = request.form.get('status')
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Find the record to update
+            record_to_update = next((r for r in records if r['Date'] == date and r['StudentID'] == student), None)
+            if not record_to_update:
+                raise Exception("Record not found for given date and student")
+
+            record_id = record_to_update['ID']
+            all_ids = [r['ID'] for r in all_records]
+            sheet_row = all_ids.index(record_id) + 2  # +2 for header row
+
+            # Update sheet
+            WORKSHEET_ATTENDANCE.update(f'F{sheet_row}:G{sheet_row}', [[new_status, timestamp]])
+
+            updated_ids.add(record_id)
+            session['updated_ids'] = list(updated_ids)
+
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': True, 'Timestamp': timestamp})
+
+            flash(f"Attendance updated for {student} on {date}", 'success')
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'error': str(e)})
+            flash(f"Error updating attendance: {e}", 'error')
+
+        return redirect(url_for('update_student_attendance'))
+
+    # Mark updated status for template
+    for r in records:
+        r['UpdateStatus'] = "✅ Updated" if r['ID'] in updated_ids else "⏳ Not Updated"
+
+    return render_template(
+        'update_student_attendance.html',
+        records=records,
+        subject=staff_subject,
+        unique_dates=unique_dates
+    )
+
+
+# @app.route('/staff/upload_marks', methods=['GET', 'POST'])
+# def upload_marks():
+#     if 'user_id' not in session or session.get('role') != 'staff':
+#         return redirect(url_for('login_page'))
+#
+#     staff_id = session.get('user_id')
+#
+#     # Get staff subject from Teachers sheet
+#     teacher_records = WORKSHEET_Teachers.get_all_records()
+#     staff_record = next((t for t in teacher_records if t['Staff ID'] == staff_id), None)
+#     if not staff_record:
+#         flash("Staff record not found", "error")
+#         return redirect(url_for('login_page'))
+#     subject = staff_record['Subject']
+#
+#     # Get all marks and all students
+#     all_marks = WORKSHEET_MARKS.get_all_records()
+#     student_records = WORKSHEET_STUDENTS.get_all_records()
+#
+#     if request.method == 'POST':
+#         student_usn = request.form['usn'].strip()
+#
+#         # Get student name automatically
+#         student = next((s for s in student_records if s['USN'] == student_usn), None)
+#         if not student:
+#             flash(f"Student USN {student_usn} not found", "error")
+#             return redirect(url_for('upload_marks'))
+#         student_name = student['Student Name']
+#
+#         marks = request.form['marks'].strip()
+#         if not marks.isdigit():
+#             flash("Marks must be a number", "error")
+#             return redirect(url_for('upload_marks'))
+#
+#         # Check if entry exists for same student + subject
+#         existing = next((r for r in all_marks if r['Student USN'] == student_usn and r['Subject'] == subject), None)
+#         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#         if existing:
+#             # Update existing row
+#             row_idx = all_marks.index(existing) + 2  # +2 for header row
+#             WORKSHEET_MARKS.update(f'E{row_idx}:G{row_idx}', [[marks, staff_id, timestamp]])
+#             flash(f"Updated marks for {student_usn} ({subject})", "success")
+#         else:
+#             # Append new row
+#             new_id = len(all_marks) + 1
+#             WORKSHEET_MARKS.append_row([new_id, student_usn, student_name, subject, marks, staff_id, timestamp])
+#             flash(f"Added marks for {student_usn} ({subject})", "success")
+#
+#         return redirect(url_for('upload_marks'))
+#
+#     # Filter marks to only show this subject
+#     subject_marks = [m for m in all_marks if m['Subject'] == subject]
+#
+#     return render_template('upload_marks.html', marks=subject_marks, subject=subject, student_records=student_records)
 
 @app.route('/staff/upload_marks', methods=['GET', 'POST'])
 def upload_marks():
@@ -997,9 +1273,11 @@ def upload_marks():
     # Get staff subject from Teachers sheet
     teacher_records = WORKSHEET_Teachers.get_all_records()
     staff_record = next((t for t in teacher_records if t['Staff ID'] == staff_id), None)
+
     if not staff_record:
         flash("Staff record not found", "error")
         return redirect(url_for('login_page'))
+
     subject = staff_record['Subject']
 
     # Get all marks and all students
@@ -1014,6 +1292,7 @@ def upload_marks():
         if not student:
             flash(f"Student USN {student_usn} not found", "error")
             return redirect(url_for('upload_marks'))
+
         student_name = student['Student Name']
 
         marks = request.form['marks'].strip()
@@ -1021,27 +1300,57 @@ def upload_marks():
             flash("Marks must be a number", "error")
             return redirect(url_for('upload_marks'))
 
-        # Check if entry exists for same student + subject
+        # Check existing record
         existing = next((r for r in all_marks if r['Student USN'] == student_usn and r['Subject'] == subject), None)
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if existing:
-            # Update existing row
             row_idx = all_marks.index(existing) + 2  # +2 for header row
             WORKSHEET_MARKS.update(f'E{row_idx}:G{row_idx}', [[marks, staff_id, timestamp]])
             flash(f"Updated marks for {student_usn} ({subject})", "success")
         else:
-            # Append new row
             new_id = len(all_marks) + 1
             WORKSHEET_MARKS.append_row([new_id, student_usn, student_name, subject, marks, staff_id, timestamp])
             flash(f"Added marks for {student_usn} ({subject})", "success")
 
         return redirect(url_for('upload_marks'))
 
-    # Filter marks to only show this subject
+    # --------------------------------------------------------------------------------
+    # ⭐ MINIMAL CHANGE STARTS HERE — CLASS FILTER LOGIC ⭐
+    # --------------------------------------------------------------------------------
+
+    # Filter by subject first
     subject_marks = [m for m in all_marks if m['Subject'] == subject]
 
-    return render_template('upload_marks.html', marks=subject_marks, subject=subject, student_records=student_records)
+    # Read dropdown filter
+    class_filter = request.args.get('class_filter')
+
+    # Classification function
+    def classify(marks):
+        marks = int(marks)
+        if marks >= 60:
+            return "first"
+        elif marks >= 50:
+            return "second"
+        elif marks >= 35:
+            return "third"
+        else:
+            return "fail"
+
+    # Apply filter only if selected
+    if class_filter:
+        subject_marks = [m for m in subject_marks if classify(m['Marks']) == class_filter]
+
+    # --------------------------------------------------------------------------------
+    # ⭐ MINIMAL CHANGE ENDS HERE ⭐
+    # --------------------------------------------------------------------------------
+
+    return render_template('upload_marks.html',
+                           marks=subject_marks,
+                           subject=subject,
+                           student_records=student_records)
+
+
 @app.route('/marks')
 def view_marks():
     if 'user_id' not in session:

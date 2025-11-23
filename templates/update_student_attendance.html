@@ -1,197 +1,403 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--<meta charset="UTF-8">-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--<title>Staff Attendance Edit</title>-->
+<!--<style>-->
+<!--body {-->
+<!--    font-family: 'Poppins', sans-serif;-->
+<!--    background: #f3f7fc;-->
+<!--    margin: 0;-->
+<!--    text-align: center;-->
+<!--}-->
+<!--header {-->
+<!--    background-color: #004aad;-->
+<!--    color: white;-->
+<!--    padding: 15px;-->
+<!--    display: flex;-->
+<!--    justify-content: space-between;-->
+<!--    align-items: center;-->
+<!--}-->
+<!--header h2 { margin: 0; font-size: 1.5em; }-->
+<!--table {-->
+<!--    width: 95%;-->
+<!--    margin: 20px auto;-->
+<!--    border-collapse: collapse;-->
+<!--    box-shadow: 0 2px 6px rgba(0,0,0,0.1);-->
+<!--    border-radius: 10px;-->
+<!--    overflow: hidden;-->
+<!--}-->
+<!--th {-->
+<!--    background-color: #004aad;-->
+<!--    color: white;-->
+<!--    padding: 12px;-->
+<!--    text-transform: uppercase;-->
+<!--}-->
+<!--td {-->
+<!--    border: 1px solid #ccc;-->
+<!--    padding: 10px;-->
+<!--    text-align: center;-->
+<!--    background: #fff;-->
+<!--    transition: background-color 0.3s ease;-->
+<!--}-->
+<!--select {-->
+<!--    padding: 5px;-->
+<!--    border-radius: 5px;-->
+<!--}-->
+<!--button {-->
+<!--    padding: 6px 12px;-->
+<!--    border: none;-->
+<!--    border-radius: 6px;-->
+<!--    background-color: #004aad;-->
+<!--    color: white;-->
+<!--    cursor: pointer;-->
+<!--    transition: all 0.2s ease-in-out;-->
+<!--}-->
+<!--button:hover { background-color: #ffb100; color: black; }-->
+
+<!--.flash {-->
+<!--    width: 95%;-->
+<!--    margin: 15px auto;-->
+<!--    padding: 10px;-->
+<!--    border-radius: 6px;-->
+<!--    font-weight: bold;-->
+<!--}-->
+<!--.flash-success { background-color: #d1ffd1; color: green; }-->
+<!--.flash-error { background-color: #ffd1d1; color: red; }-->
+
+<!--.status-updated {-->
+<!--    background-color: #c8f7c5;-->
+<!--    color: green;-->
+<!--    font-weight: bold;-->
+<!--    padding: 6px 8px;-->
+<!--    border-radius: 5px;-->
+<!--}-->
+<!--.status-not-updated {-->
+<!--    background-color: #ffd9d9;-->
+<!--    color: red;-->
+<!--    font-weight: bold;-->
+<!--    padding: 6px 8px;-->
+<!--    border-radius: 5px;-->
+<!--}-->
+<!--.row-highlight {-->
+<!--    background-color: #c8f7c5 !important;-->
+<!--    transition: background-color 1.5s ease;-->
+<!--}-->
+<!--</style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<header>-->
+<!--    <h2>Staff Attendance Dashboard</h2>-->
+<!--    <button onclick="window.location.href='/staff'">⟵ Dashboard</button>-->
+<!--</header>-->
+
+<!--<h3>Update Attendance for {{ subject }}</h3>-->
+
+<!--&lt;!&ndash; Flash messages &ndash;&gt;-->
+<!--{% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--  {% if messages %}-->
+<!--    {% for category, message in messages %}-->
+<!--      <div class="flash {% if category=='success' %}flash-success{% else %}flash-error{% endif %}">-->
+<!--        {{ message }}-->
+<!--      </div>-->
+<!--    {% endfor %}-->
+<!--  {% endif %}-->
+<!--{% endwith %}-->
+
+<!--<table>-->
+<!--<thead>-->
+<!--<tr>-->
+<!--    <th>ID</th>-->
+<!--    <th>StudentID</th>-->
+<!--    <th>Date</th>-->
+<!--    <th>Time</th>-->
+<!--    <th>Subject</th>-->
+<!--    <th>Status</th>-->
+<!--    <th>Action</th>-->
+<!--    <th>Update Status</th>-->
+<!--    <th>Timestamp</th>-->
+<!--</tr>-->
+<!--</thead>-->
+<!--<tbody>-->
+<!--{% for record in records %}-->
+<!--<tr id="row-{{ loop.index0 }}">-->
+<!--    <td>{{ record.ID }}</td>-->
+<!--    <td>{{ record.StudentID }}</td>-->
+<!--    <td>{{ record.Date }}</td>-->
+<!--    <td>{{ record.Time }}</td>-->
+<!--    <td>{{ record.Subject }}</td>-->
+<!--    <td>-->
+<!--        <select name="status" id="status-{{ loop.index0 }}">-->
+<!--            <option value="Present" {% if record.Status=='Present' %}selected{% endif %}>Present</option>-->
+<!--            <option value="Absent" {% if record.Status=='Absent' %}selected{% endif %}>Absent</option>-->
+<!--            <option value="No Class" {% if record.Status=='No Class' %}selected{% endif %}>No Class</option>-->
+<!--        </select>-->
+<!--    </td>-->
+<!--    <td>-->
+<!--        <form method="POST" class="update-form" data-row="{{ loop.index0 }}">-->
+<!--            <input type="hidden" name="row_id" value="{{ loop.index0 }}">-->
+<!--            <button type="submit">Update</button>-->
+<!--        </form>-->
+<!--    </td>-->
+<!--    <td>-->
+<!--        <span id="update-status-{{ loop.index0 }}" class="{% if record.UpdateStatus=='✅ Updated' %}status-updated{% else %}status-not-updated{% endif %}">-->
+<!--            {% if record.UpdateStatus=='✅ Updated' %}Updated{% else %}Not Updated{% endif %}-->
+<!--        </span>-->
+<!--    </td>-->
+<!--    <td id="timestamp-{{ loop.index0 }}">{{ record.Timestamp }}</td>-->
+<!--</tr>-->
+<!--{% endfor %}-->
+<!--</tbody>-->
+<!--</table>-->
+
+<!--<script>-->
+<!--document.querySelectorAll('.update-form').forEach(form => {-->
+<!--    form.addEventListener('submit', function(e){-->
+<!--        e.preventDefault();-->
+<!--        const rowId = this.dataset.row;-->
+<!--        const formData = new FormData(this);-->
+<!--        const selectedStatus = document.getElementById(`status-${rowId}`).value;-->
+
+<!--        // Ensure selected status is sent-->
+<!--        formData.set('status', selectedStatus);-->
+
+<!--        fetch("/staff/attendance", {-->
+<!--            method: "POST",-->
+<!--            body: formData,-->
+<!--            headers: { 'X-Requested-With': 'XMLHttpRequest' }-->
+<!--        })-->
+<!--        .then(response => response.json())-->
+<!--        .then(data => {-->
+<!--            if(data.success){-->
+<!--                // Update status badge-->
+<!--                const statusCell = document.getElementById(`update-status-${rowId}`);-->
+<!--                statusCell.textContent = 'Updated';-->
+<!--                statusCell.className = 'status-updated';-->
+
+<!--                // Update timestamp cell-->
+<!--                const timestampCell = document.getElementById(`timestamp-${rowId}`);-->
+<!--                if(timestampCell) timestampCell.textContent = data.Timestamp;-->
+
+<!--                // Highlight row temporarily-->
+<!--                const row = document.getElementById(`row-${rowId}`);-->
+<!--                row.classList.add('row-highlight');-->
+<!--                setTimeout(()=>row.classList.remove('row-highlight'),1500);-->
+<!--            } else {-->
+<!--                alert('Error: ' + data.error);-->
+<!--            }-->
+<!--        })-->
+<!--        .catch(err => alert('Request failed: ' + err));-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Staff Attendance Edit</title>
+<title>Edit Attendance - Staff</title>
 <style>
 body {
-    font-family: 'Poppins', sans-serif;
-    background: #f3f7fc;
-    margin: 0;
-    text-align: center;
+  font-family: 'Poppins', sans-serif;
+  background: #f3f7fc;
+  margin: 0;
+  text-align: center;
 }
 header {
-    background-color: #004aad;
-    color: white;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background-color: #004aad;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: center; /* center title */
+  align-items: center;
+  position: relative; /* to position button in corner */
 }
-header h2 { margin: 0; font-size: 1.5em; }
-table {
-    width: 95%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    border-radius: 10px;
-    overflow: hidden;
+header h2 {
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+  flex: 1;
 }
-th {
-    background-color: #004aad;
-    color: white;
-    padding: 12px;
-    text-transform: uppercase;
+header button {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  font-size: 0.9em;
+  background: #ffffff;
+  color: #004aad;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
-td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-    background: #fff;
-    transition: background-color 0.3s ease;
+header button:hover {
+  background: #ffb100;
+  color: black;
+}
+.container {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 select {
-    padding: 5px;
-    border-radius: 5px;
-}
-button {
-    padding: 6px 12px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 80%;
+      outline: none;
+      transition: 0.3s;
+    }
+  .back-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    background-color: white;
+    color: #004aad;
     border: none;
-    border-radius: 6px;
-    background-color: #004aad;
-    color: white;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: 0.3s;
 }
-button:hover { background-color: #ffb100; color: black; }
-
-.flash {
-    width: 95%;
-    margin: 15px auto;
-    padding: 10px;
-    border-radius: 6px;
-    font-weight: bold;
+.back-button:hover {
+    background-color: #e6ecff;
 }
-.flash-success { background-color: #d1ffd1; color: green; }
-.flash-error { background-color: #ffd1d1; color: red; }
-
-.status-updated {
-    background-color: #c8f7c5;
-    color: green;
-    font-weight: bold;
-    padding: 6px 8px;
-    border-radius: 5px;
-}
-.status-not-updated {
-    background-color: #ffd9d9;
-    color: red;
-    font-weight: bold;
-    padding: 6px 8px;
-    border-radius: 5px;
-}
-.row-highlight {
-    background-color: #c8f7c5 !important;
-    transition: background-color 1.5s ease;
-}
+.flash-success { background: #d1ffd1; color: green; padding: 10px; border-radius: 6px; }
+.flash-error { background: #ffd1d1; color: red; padding: 10px; border-radius: 6px; }
+#attendance-form { display: none; }
+.status-updated { background: #c8f7c5; color: green; font-weight: bold; padding: 6px; border-radius: 5px; }
 </style>
 </head>
 <body>
 
 <header>
-    <h2>Staff Attendance Dashboard</h2>
-    <button onclick="window.location.href='/staff'">⟵ Dashboard</button>
+  <h2>Staff Attendance Dashboard</h2>
+  <button class="back-button" onclick="window.location.href='/staff'">⟵ Dashboard</button>
 </header>
 
-<h3>Update Attendance for {{ subject }}</h3>
+<div class="container">
+  <h3>Update Attendance for {{ subject }}</h3>
 
-<!-- Flash messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="flash {% if category=='success' %}flash-success{% else %}flash-error{% endif %}">
-        {{ message }}
-      </div>
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Step 1: Select Date -->
+  <label><strong>Select Date:</strong></label><br>
+  <select id="date-select">
+    <option value="">-- Choose Date --</option>
+    {% for d in unique_dates %}
+      <option value="{{ d }}">{{ d }}</option>
     {% endfor %}
-  {% endif %}
-{% endwith %}
+  </select>
 
-<table>
-<thead>
-<tr>
-    <th>ID</th>
-    <th>StudentID</th>
-    <th>Date</th>
-    <th>Time</th>
-    <th>Subject</th>
-    <th>Status</th>
-    <th>Action</th>
-    <th>Update Status</th>
-    <th>Timestamp</th>
-</tr>
-</thead>
-<tbody>
-{% for record in records %}
-<tr id="row-{{ loop.index0 }}">
-    <td>{{ record.ID }}</td>
-    <td>{{ record.StudentID }}</td>
-    <td>{{ record.Date }}</td>
-    <td>{{ record.Time }}</td>
-    <td>{{ record.Subject }}</td>
-    <td>
-        <select name="status" id="status-{{ loop.index0 }}">
-            <option value="Present" {% if record.Status=='Present' %}selected{% endif %}>Present</option>
-            <option value="Absent" {% if record.Status=='Absent' %}selected{% endif %}>Absent</option>
-            <option value="No Class" {% if record.Status=='No Class' %}selected{% endif %}>No Class</option>
-        </select>
-    </td>
-    <td>
-        <form method="POST" class="update-form" data-row="{{ loop.index0 }}">
-            <input type="hidden" name="row_id" value="{{ loop.index0 }}">
-            <button type="submit">Update</button>
-        </form>
-    </td>
-    <td>
-        <span id="update-status-{{ loop.index0 }}" class="{% if record.UpdateStatus=='✅ Updated' %}status-updated{% else %}status-not-updated{% endif %}">
-            {% if record.UpdateStatus=='✅ Updated' %}Updated{% else %}Not Updated{% endif %}
-        </span>
-    </td>
-    <td id="timestamp-{{ loop.index0 }}">{{ record.Timestamp }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+  <!-- Step 2: Select Student -->
+  <div id="student-select-container" style="display:none;">
+    <label><strong>Select Student:</strong></label><br>
+    <select id="student-select">
+      <option value="">-- Choose Student --</option>
+    </select>
+  </div>
+
+  <!-- Step 3: Update -->
+  <form id="attendance-form" method="POST">
+    <label><strong>Status:</strong></label><br>
+    <select id="status" name="status">
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+      <option value="No Class">No Class</option>
+    </select><br>
+    <button type="submit">Update Attendance</button>
+  </form>
+
+  <p id="update-msg"></p>
+</div>
 
 <script>
-document.querySelectorAll('.update-form').forEach(form => {
-    form.addEventListener('submit', function(e){
-        e.preventDefault();
-        const rowId = this.dataset.row;
-        const formData = new FormData(this);
-        const selectedStatus = document.getElementById(`status-${rowId}`).value;
+const records = {{ records|tojson }};
+const dateSelect = document.getElementById('date-select');
+const studentContainer = document.getElementById('student-select-container');
+const studentSelect = document.getElementById('student-select');
+const attendanceForm = document.getElementById('attendance-form');
+const updateMsg = document.getElementById('update-msg');
 
-        // Ensure selected status is sent
-        formData.set('status', selectedStatus);
+let selectedDate = '';
+let selectedStudent = '';
 
-        fetch("/staff/attendance", {
-            method: "POST",
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success){
-                // Update status badge
-                const statusCell = document.getElementById(`update-status-${rowId}`);
-                statusCell.textContent = 'Updated';
-                statusCell.className = 'status-updated';
+dateSelect.addEventListener('change', () => {
+  selectedDate = dateSelect.value;
+  studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
 
-                // Update timestamp cell
-                const timestampCell = document.getElementById(`timestamp-${rowId}`);
-                if(timestampCell) timestampCell.textContent = data.Timestamp;
-
-                // Highlight row temporarily
-                const row = document.getElementById(`row-${rowId}`);
-                row.classList.add('row-highlight');
-                setTimeout(()=>row.classList.remove('row-highlight'),1500);
-            } else {
-                alert('Error: ' + data.error);
-            }
-        })
-        .catch(err => alert('Request failed: ' + err));
+  if (selectedDate) {
+    const students = records
+      .filter(r => r.Date === selectedDate)
+      .map(r => r.StudentID);
+    const uniqueStudents = [...new Set(students)];
+    uniqueStudents.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      studentSelect.appendChild(opt);
     });
+    studentContainer.style.display = 'block';
+    attendanceForm.style.display = 'none';
+  } else {
+    studentContainer.style.display = 'none';
+    attendanceForm.style.display = 'none';
+  }
+});
+
+studentSelect.addEventListener('change', () => {
+  selectedStudent = studentSelect.value;
+  attendanceForm.style.display = selectedStudent ? 'block' : 'none';
+});
+
+attendanceForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(attendanceForm);
+  formData.append('date', selectedDate);
+  formData.append('student', selectedStudent);
+
+  fetch('/staff/attendance', {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      updateMsg.textContent = '✅ Attendance updated successfully!';
+      updateMsg.className = 'status-updated';
+    } else {
+      updateMsg.textContent = '❌ ' + data.error;
+      updateMsg.className = 'flash-error';
+    }
+  })
+  .catch(err => {
+    updateMsg.textContent = '⚠️ Request failed: ' + err;
+    updateMsg.className = 'flash-error';
+  });
 });
 </script>
 
 </body>
 </html>
+
