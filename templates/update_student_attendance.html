@@ -1,196 +1,682 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html lang="en">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;<meta charset="UTF-8">&ndash;&gt;-->
+<!--&lt;!&ndash;<meta name="viewport" content="width=device-width, initial-scale=1.0">&ndash;&gt;-->
+<!--&lt;!&ndash;<title>Staff Attendance Edit</title>&ndash;&gt;-->
+<!--&lt;!&ndash;<style>&ndash;&gt;-->
+<!--&lt;!&ndash;body {&ndash;&gt;-->
+<!--&lt;!&ndash;    font-family: 'Poppins', sans-serif;&ndash;&gt;-->
+<!--&lt;!&ndash;    background: #f3f7fc;&ndash;&gt;-->
+<!--&lt;!&ndash;    margin: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;    text-align: center;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 15px;&ndash;&gt;-->
+<!--&lt;!&ndash;    display: flex;&ndash;&gt;-->
+<!--&lt;!&ndash;    justify-content: space-between;&ndash;&gt;-->
+<!--&lt;!&ndash;    align-items: center;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header h2 { margin: 0; font-size: 1.5em; }&ndash;&gt;-->
+<!--&lt;!&ndash;table {&ndash;&gt;-->
+<!--&lt;!&ndash;    width: 95%;&ndash;&gt;-->
+<!--&lt;!&ndash;    margin: 20px auto;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-collapse: collapse;&ndash;&gt;-->
+<!--&lt;!&ndash;    box-shadow: 0 2px 6px rgba(0,0,0,0.1);&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;    overflow: hidden;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;th {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;    text-transform: uppercase;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;td {&ndash;&gt;-->
+<!--&lt;!&ndash;    border: 1px solid #ccc;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;    text-align: center;&ndash;&gt;-->
+<!--&lt;!&ndash;    background: #fff;&ndash;&gt;-->
+<!--&lt;!&ndash;    transition: background-color 0.3s ease;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;select {&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 5px;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 5px;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;button {&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 6px 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;    border: none;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;    cursor: pointer;&ndash;&gt;-->
+<!--&lt;!&ndash;    transition: all 0.2s ease-in-out;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;button:hover { background-color: #ffb100; color: black; }&ndash;&gt;-->
+
+<!--&lt;!&ndash;.flash {&ndash;&gt;-->
+<!--&lt;!&ndash;    width: 95%;&ndash;&gt;-->
+<!--&lt;!&ndash;    margin: 15px auto;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;    font-weight: bold;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.flash-success { background-color: #d1ffd1; color: green; }&ndash;&gt;-->
+<!--&lt;!&ndash;.flash-error { background-color: #ffd1d1; color: red; }&ndash;&gt;-->
+
+<!--&lt;!&ndash;.status-updated {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #c8f7c5;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: green;&ndash;&gt;-->
+<!--&lt;!&ndash;    font-weight: bold;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 6px 8px;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 5px;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.status-not-updated {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #ffd9d9;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: red;&ndash;&gt;-->
+<!--&lt;!&ndash;    font-weight: bold;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 6px 8px;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 5px;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.row-highlight {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #c8f7c5 !important;&ndash;&gt;-->
+<!--&lt;!&ndash;    transition: background-color 1.5s ease;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;</style>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<header>&ndash;&gt;-->
+<!--&lt;!&ndash;    <h2>Staff Attendance Dashboard</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;    <button onclick="window.location.href='/staff'">⟵ Dashboard</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</header>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<h3>Update Attendance for {{ subject }}</h3>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Flash messages &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;{% with messages = get_flashed_messages(with_categories=true) %}&ndash;&gt;-->
+<!--&lt;!&ndash;  {% if messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;    {% for category, message in messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flash {% if category=='success' %}flash-success{% else %}flash-error{% endif %}">&ndash;&gt;-->
+<!--&lt;!&ndash;        {{ message }}&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;  {% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;{% endwith %}&ndash;&gt;-->
+
+<!--&lt;!&ndash;<table>&ndash;&gt;-->
+<!--&lt;!&ndash;<thead>&ndash;&gt;-->
+<!--&lt;!&ndash;<tr>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>ID</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>StudentID</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Date</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Time</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Subject</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Status</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Action</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Update Status</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    <th>Timestamp</th>&ndash;&gt;-->
+<!--&lt;!&ndash;</tr>&ndash;&gt;-->
+<!--&lt;!&ndash;</thead>&ndash;&gt;-->
+<!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;{% for record in records %}&ndash;&gt;-->
+<!--&lt;!&ndash;<tr id="row-{{ loop.index0 }}">&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>{{ record.ID }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>{{ record.StudentID }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>{{ record.Date }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>{{ record.Time }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>{{ record.Subject }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <select name="status" id="status-{{ loop.index0 }}">&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="Present" {% if record.Status=='Present' %}selected{% endif %}>Present</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="Absent" {% if record.Status=='Absent' %}selected{% endif %}>Absent</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="No Class" {% if record.Status=='No Class' %}selected{% endif %}>No Class</option>&ndash;&gt;-->
+<!--&lt;!&ndash;        </select>&ndash;&gt;-->
+<!--&lt;!&ndash;    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <form method="POST" class="update-form" data-row="{{ loop.index0 }}">&ndash;&gt;-->
+<!--&lt;!&ndash;            <input type="hidden" name="row_id" value="{{ loop.index0 }}">&ndash;&gt;-->
+<!--&lt;!&ndash;            <button type="submit">Update</button>&ndash;&gt;-->
+<!--&lt;!&ndash;        </form>&ndash;&gt;-->
+<!--&lt;!&ndash;    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <span id="update-status-{{ loop.index0 }}" class="{% if record.UpdateStatus=='✅ Updated' %}status-updated{% else %}status-not-updated{% endif %}">&ndash;&gt;-->
+<!--&lt;!&ndash;            {% if record.UpdateStatus=='✅ Updated' %}Updated{% else %}Not Updated{% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;        </span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td id="timestamp-{{ loop.index0 }}">{{ record.Timestamp }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;</tr>&ndash;&gt;-->
+<!--&lt;!&ndash;{% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;document.querySelectorAll('.update-form').forEach(form => {&ndash;&gt;-->
+<!--&lt;!&ndash;    form.addEventListener('submit', function(e){&ndash;&gt;-->
+<!--&lt;!&ndash;        e.preventDefault();&ndash;&gt;-->
+<!--&lt;!&ndash;        const rowId = this.dataset.row;&ndash;&gt;-->
+<!--&lt;!&ndash;        const formData = new FormData(this);&ndash;&gt;-->
+<!--&lt;!&ndash;        const selectedStatus = document.getElementById(`status-${rowId}`).value;&ndash;&gt;-->
+
+<!--&lt;!&ndash;        // Ensure selected status is sent&ndash;&gt;-->
+<!--&lt;!&ndash;        formData.set('status', selectedStatus);&ndash;&gt;-->
+
+<!--&lt;!&ndash;        fetch("/staff/attendance", {&ndash;&gt;-->
+<!--&lt;!&ndash;            method: "POST",&ndash;&gt;-->
+<!--&lt;!&ndash;            body: formData,&ndash;&gt;-->
+<!--&lt;!&ndash;            headers: { 'X-Requested-With': 'XMLHttpRequest' }&ndash;&gt;-->
+<!--&lt;!&ndash;        })&ndash;&gt;-->
+<!--&lt;!&ndash;        .then(response => response.json())&ndash;&gt;-->
+<!--&lt;!&ndash;        .then(data => {&ndash;&gt;-->
+<!--&lt;!&ndash;            if(data.success){&ndash;&gt;-->
+<!--&lt;!&ndash;                // Update status badge&ndash;&gt;-->
+<!--&lt;!&ndash;                const statusCell = document.getElementById(`update-status-${rowId}`);&ndash;&gt;-->
+<!--&lt;!&ndash;                statusCell.textContent = 'Updated';&ndash;&gt;-->
+<!--&lt;!&ndash;                statusCell.className = 'status-updated';&ndash;&gt;-->
+
+<!--&lt;!&ndash;                // Update timestamp cell&ndash;&gt;-->
+<!--&lt;!&ndash;                const timestampCell = document.getElementById(`timestamp-${rowId}`);&ndash;&gt;-->
+<!--&lt;!&ndash;                if(timestampCell) timestampCell.textContent = data.Timestamp;&ndash;&gt;-->
+
+<!--&lt;!&ndash;                // Highlight row temporarily&ndash;&gt;-->
+<!--&lt;!&ndash;                const row = document.getElementById(`row-${rowId}`);&ndash;&gt;-->
+<!--&lt;!&ndash;                row.classList.add('row-highlight');&ndash;&gt;-->
+<!--&lt;!&ndash;                setTimeout(()=>row.classList.remove('row-highlight'),1500);&ndash;&gt;-->
+<!--&lt;!&ndash;            } else {&ndash;&gt;-->
+<!--&lt;!&ndash;                alert('Error: ' + data.error);&ndash;&gt;-->
+<!--&lt;!&ndash;            }&ndash;&gt;-->
+<!--&lt;!&ndash;        })&ndash;&gt;-->
+<!--&lt;!&ndash;        .catch(err => alert('Request failed: ' + err));&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+<!--&lt;!&ndash;});&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html lang="en">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;<meta charset="UTF-8">&ndash;&gt;-->
+<!--&lt;!&ndash;<meta name="viewport" content="width=device-width, initial-scale=1.0">&ndash;&gt;-->
+<!--&lt;!&ndash;<title>Edit Attendance - Staff</title>&ndash;&gt;-->
+<!--&lt;!&ndash;<style>&ndash;&gt;-->
+<!--&lt;!&ndash;body {&ndash;&gt;-->
+<!--&lt;!&ndash;  font-family: 'Poppins', sans-serif;&ndash;&gt;-->
+<!--&lt;!&ndash;  background: #f3f7fc;&ndash;&gt;-->
+<!--&lt;!&ndash;  margin: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;  text-align: center;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header {&ndash;&gt;-->
+<!--&lt;!&ndash;  background-color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;  color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;  padding: 15px;&ndash;&gt;-->
+<!--&lt;!&ndash;  display: flex;&ndash;&gt;-->
+<!--&lt;!&ndash;  justify-content: center; /* center title */&ndash;&gt;-->
+<!--&lt;!&ndash;  align-items: center;&ndash;&gt;-->
+<!--&lt;!&ndash;  position: relative; /* to position button in corner */&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header h2 {&ndash;&gt;-->
+<!--&lt;!&ndash;  margin: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;  font-size: 1.5em;&ndash;&gt;-->
+<!--&lt;!&ndash;  text-align: center;&ndash;&gt;-->
+<!--&lt;!&ndash;  flex: 1;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header button {&ndash;&gt;-->
+<!--&lt;!&ndash;  position: absolute;&ndash;&gt;-->
+<!--&lt;!&ndash;  right: 15px;&ndash;&gt;-->
+<!--&lt;!&ndash;  top: 50%;&ndash;&gt;-->
+<!--&lt;!&ndash;  transform: translateY(-50%);&ndash;&gt;-->
+<!--&lt;!&ndash;  padding: 6px 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;  font-size: 0.9em;&ndash;&gt;-->
+<!--&lt;!&ndash;  background: #ffffff;&ndash;&gt;-->
+<!--&lt;!&ndash;  color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;  border: none;&ndash;&gt;-->
+<!--&lt;!&ndash;  border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;  cursor: pointer;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;header button:hover {&ndash;&gt;-->
+<!--&lt;!&ndash;  background: #ffb100;&ndash;&gt;-->
+<!--&lt;!&ndash;  color: black;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.container {&ndash;&gt;-->
+<!--&lt;!&ndash;  background: white;&ndash;&gt;-->
+<!--&lt;!&ndash;  width: 90%;&ndash;&gt;-->
+<!--&lt;!&ndash;  max-width: 600px;&ndash;&gt;-->
+<!--&lt;!&ndash;  margin: 40px auto;&ndash;&gt;-->
+<!--&lt;!&ndash;  padding: 20px;&ndash;&gt;-->
+<!--&lt;!&ndash;  border-radius: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;  box-shadow: 0 3px 10px rgba(0,0,0,0.1);&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;select {&ndash;&gt;-->
+<!--&lt;!&ndash;      padding: 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;      font-size: 16px;&ndash;&gt;-->
+<!--&lt;!&ndash;      border: 1px solid #ccc;&ndash;&gt;-->
+<!--&lt;!&ndash;      border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;      width: 80%;&ndash;&gt;-->
+<!--&lt;!&ndash;      outline: none;&ndash;&gt;-->
+<!--&lt;!&ndash;      transition: 0.3s;&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+<!--&lt;!&ndash;  .back-button {&ndash;&gt;-->
+<!--&lt;!&ndash;    position: absolute;&ndash;&gt;-->
+<!--&lt;!&ndash;    right: 20px;&ndash;&gt;-->
+<!--&lt;!&ndash;    top: 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;    color: #004aad;&ndash;&gt;-->
+<!--&lt;!&ndash;    border: none;&ndash;&gt;-->
+<!--&lt;!&ndash;    padding: 8px 14px;&ndash;&gt;-->
+<!--&lt;!&ndash;    font-weight: bold;&ndash;&gt;-->
+<!--&lt;!&ndash;    border-radius: 8px;&ndash;&gt;-->
+<!--&lt;!&ndash;    cursor: pointer;&ndash;&gt;-->
+<!--&lt;!&ndash;    transition: 0.3s;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.back-button:hover {&ndash;&gt;-->
+<!--&lt;!&ndash;    background-color: #e6ecff;&ndash;&gt;-->
+<!--&lt;!&ndash;}&ndash;&gt;-->
+<!--&lt;!&ndash;.flash-success { background: #d1ffd1; color: green; padding: 10px; border-radius: 6px; }&ndash;&gt;-->
+<!--&lt;!&ndash;.flash-error { background: #ffd1d1; color: red; padding: 10px; border-radius: 6px; }&ndash;&gt;-->
+<!--&lt;!&ndash;#attendance-form { display: none; }&ndash;&gt;-->
+<!--&lt;!&ndash;.status-updated { background: #c8f7c5; color: green; font-weight: bold; padding: 6px; border-radius: 5px; }&ndash;&gt;-->
+<!--&lt;!&ndash;</style>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<header>&ndash;&gt;-->
+<!--&lt;!&ndash;  <h2>Staff Attendance Dashboard</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;  <button class="back-button" onclick="window.location.href='/staff'">⟵ Dashboard</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</header>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<div class="container">&ndash;&gt;-->
+<!--&lt;!&ndash;  <h3>Update Attendance for {{ subject }}</h3>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  &lt;!&ndash; Flash messages &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;  {% with messages = get_flashed_messages(with_categories=true) %}&ndash;&gt;-->
+<!--&lt;!&ndash;    {% if messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;      {% for category, message in messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="flash-{{ category }}">{{ message }}</div>&ndash;&gt;-->
+<!--&lt;!&ndash;      {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;    {% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;  {% endwith %}&ndash;&gt;-->
+
+<!--&lt;!&ndash;  &lt;!&ndash; Step 1: Select Date &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;  <label><strong>Select Date:</strong></label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;  <select id="date-select">&ndash;&gt;-->
+<!--&lt;!&ndash;    <option value="">&#45;&#45; Choose Date &#45;&#45;</option>&ndash;&gt;-->
+<!--&lt;!&ndash;    {% for d in unique_dates %}&ndash;&gt;-->
+<!--&lt;!&ndash;      <option value="{{ d }}">{{ d }}</option>&ndash;&gt;-->
+<!--&lt;!&ndash;    {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;  </select>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  &lt;!&ndash; Step 2: Select Student &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;  <div id="student-select-container" style="display:none;">&ndash;&gt;-->
+<!--&lt;!&ndash;    <label><strong>Select Student:</strong></label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;    <select id="student-select">&ndash;&gt;-->
+<!--&lt;!&ndash;      <option value="">&#45;&#45; Choose Student &#45;&#45;</option>&ndash;&gt;-->
+<!--&lt;!&ndash;    </select>&ndash;&gt;-->
+<!--&lt;!&ndash;  </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  &lt;!&ndash; Step 3: Update &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;  <form id="attendance-form" method="POST">&ndash;&gt;-->
+<!--&lt;!&ndash;    <label><strong>Status:</strong></label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;    <select id="status" name="status">&ndash;&gt;-->
+<!--&lt;!&ndash;      <option value="Present">Present</option>&ndash;&gt;-->
+<!--&lt;!&ndash;      <option value="Absent">Absent</option>&ndash;&gt;-->
+<!--&lt;!&ndash;      <option value="No Class">No Class</option>&ndash;&gt;-->
+<!--&lt;!&ndash;    </select><br>&ndash;&gt;-->
+<!--&lt;!&ndash;    <button type="submit">Update Attendance</button>&ndash;&gt;-->
+<!--&lt;!&ndash;  </form>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  <p id="update-msg"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;const records = {{ records|tojson }};&ndash;&gt;-->
+<!--&lt;!&ndash;const dateSelect = document.getElementById('date-select');&ndash;&gt;-->
+<!--&lt;!&ndash;const studentContainer = document.getElementById('student-select-container');&ndash;&gt;-->
+<!--&lt;!&ndash;const studentSelect = document.getElementById('student-select');&ndash;&gt;-->
+<!--&lt;!&ndash;const attendanceForm = document.getElementById('attendance-form');&ndash;&gt;-->
+<!--&lt;!&ndash;const updateMsg = document.getElementById('update-msg');&ndash;&gt;-->
+
+<!--&lt;!&ndash;let selectedDate = '';&ndash;&gt;-->
+<!--&lt;!&ndash;let selectedStudent = '';&ndash;&gt;-->
+
+<!--&lt;!&ndash;dateSelect.addEventListener('change', () => {&ndash;&gt;-->
+<!--&lt;!&ndash;  selectedDate = dateSelect.value;&ndash;&gt;-->
+<!--&lt;!&ndash;  studentSelect.innerHTML = '<option value="">&#45;&#45; Choose Student &#45;&#45;</option>';&ndash;&gt;-->
+
+<!--&lt;!&ndash;  if (selectedDate) {&ndash;&gt;-->
+<!--&lt;!&ndash;    const students = records&ndash;&gt;-->
+<!--&lt;!&ndash;      .filter(r => r.Date === selectedDate)&ndash;&gt;-->
+<!--&lt;!&ndash;      .map(r => r.StudentID);&ndash;&gt;-->
+<!--&lt;!&ndash;    const uniqueStudents = [...new Set(students)];&ndash;&gt;-->
+<!--&lt;!&ndash;    uniqueStudents.forEach(s => {&ndash;&gt;-->
+<!--&lt;!&ndash;      const opt = document.createElement('option');&ndash;&gt;-->
+<!--&lt;!&ndash;      opt.value = s;&ndash;&gt;-->
+<!--&lt;!&ndash;      opt.textContent = s;&ndash;&gt;-->
+<!--&lt;!&ndash;      studentSelect.appendChild(opt);&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+<!--&lt;!&ndash;    studentContainer.style.display = 'block';&ndash;&gt;-->
+<!--&lt;!&ndash;    attendanceForm.style.display = 'none';&ndash;&gt;-->
+<!--&lt;!&ndash;  } else {&ndash;&gt;-->
+<!--&lt;!&ndash;    studentContainer.style.display = 'none';&ndash;&gt;-->
+<!--&lt;!&ndash;    attendanceForm.style.display = 'none';&ndash;&gt;-->
+<!--&lt;!&ndash;  }&ndash;&gt;-->
+<!--&lt;!&ndash;});&ndash;&gt;-->
+
+<!--&lt;!&ndash;studentSelect.addEventListener('change', () => {&ndash;&gt;-->
+<!--&lt;!&ndash;  selectedStudent = studentSelect.value;&ndash;&gt;-->
+<!--&lt;!&ndash;  attendanceForm.style.display = selectedStudent ? 'block' : 'none';&ndash;&gt;-->
+<!--&lt;!&ndash;});&ndash;&gt;-->
+
+<!--&lt;!&ndash;attendanceForm.addEventListener('submit', (e) => {&ndash;&gt;-->
+<!--&lt;!&ndash;  e.preventDefault();&ndash;&gt;-->
+<!--&lt;!&ndash;  const formData = new FormData(attendanceForm);&ndash;&gt;-->
+<!--&lt;!&ndash;  formData.append('date', selectedDate);&ndash;&gt;-->
+<!--&lt;!&ndash;  formData.append('student', selectedStudent);&ndash;&gt;-->
+
+<!--&lt;!&ndash;  fetch('/staff/attendance', {&ndash;&gt;-->
+<!--&lt;!&ndash;    method: 'POST',&ndash;&gt;-->
+<!--&lt;!&ndash;    body: formData,&ndash;&gt;-->
+<!--&lt;!&ndash;    headers: { 'X-Requested-With': 'XMLHttpRequest' }&ndash;&gt;-->
+<!--&lt;!&ndash;  })&ndash;&gt;-->
+<!--&lt;!&ndash;  .then(res => res.json())&ndash;&gt;-->
+<!--&lt;!&ndash;  .then(data => {&ndash;&gt;-->
+<!--&lt;!&ndash;    if (data.success) {&ndash;&gt;-->
+<!--&lt;!&ndash;      updateMsg.textContent = '✅ Attendance updated successfully!';&ndash;&gt;-->
+<!--&lt;!&ndash;      updateMsg.className = 'status-updated';&ndash;&gt;-->
+<!--&lt;!&ndash;    } else {&ndash;&gt;-->
+<!--&lt;!&ndash;      updateMsg.textContent = '❌ ' + data.error;&ndash;&gt;-->
+<!--&lt;!&ndash;      updateMsg.className = 'flash-error';&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+<!--&lt;!&ndash;  })&ndash;&gt;-->
+<!--&lt;!&ndash;  .catch(err => {&ndash;&gt;-->
+<!--&lt;!&ndash;    updateMsg.textContent = '⚠️ Request failed: ' + err;&ndash;&gt;-->
+<!--&lt;!&ndash;    updateMsg.className = 'flash-error';&ndash;&gt;-->
+<!--&lt;!&ndash;  });&ndash;&gt;-->
+<!--&lt;!&ndash;});&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+
+
 <!--<!DOCTYPE html>-->
 <!--<html lang="en">-->
 <!--<head>-->
 <!--<meta charset="UTF-8">-->
 <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--<title>Staff Attendance Edit</title>-->
+<!--<title>Edit Attendance - Staff</title>-->
+
 <!--<style>-->
 <!--body {-->
-<!--    font-family: 'Poppins', sans-serif;-->
-<!--    background: #f3f7fc;-->
-<!--    margin: 0;-->
-<!--    text-align: center;-->
+<!--  font-family: 'Poppins', sans-serif;-->
+<!--  background: #f3f7fc;-->
+<!--  margin: 0;-->
 <!--}-->
+
 <!--header {-->
-<!--    background-color: #004aad;-->
-<!--    color: white;-->
-<!--    padding: 15px;-->
-<!--    display: flex;-->
-<!--    justify-content: space-between;-->
-<!--    align-items: center;-->
+<!--  background-color: #004aad;-->
+<!--  color: white;-->
+<!--  padding: 15px;-->
+<!--  display: flex;-->
+<!--  justify-content: center;-->
+<!--  align-items: center;-->
+<!--  position: relative;-->
 <!--}-->
-<!--header h2 { margin: 0; font-size: 1.5em; }-->
-<!--table {-->
-<!--    width: 95%;-->
-<!--    margin: 20px auto;-->
-<!--    border-collapse: collapse;-->
-<!--    box-shadow: 0 2px 6px rgba(0,0,0,0.1);-->
-<!--    border-radius: 10px;-->
-<!--    overflow: hidden;-->
-<!--}-->
-<!--th {-->
-<!--    background-color: #004aad;-->
-<!--    color: white;-->
-<!--    padding: 12px;-->
-<!--    text-transform: uppercase;-->
-<!--}-->
-<!--td {-->
-<!--    border: 1px solid #ccc;-->
-<!--    padding: 10px;-->
-<!--    text-align: center;-->
-<!--    background: #fff;-->
-<!--    transition: background-color 0.3s ease;-->
-<!--}-->
-<!--select {-->
-<!--    padding: 5px;-->
-<!--    border-radius: 5px;-->
-<!--}-->
-<!--button {-->
-<!--    padding: 6px 12px;-->
-<!--    border: none;-->
-<!--    border-radius: 6px;-->
-<!--    background-color: #004aad;-->
-<!--    color: white;-->
-<!--    cursor: pointer;-->
-<!--    transition: all 0.2s ease-in-out;-->
-<!--}-->
-<!--button:hover { background-color: #ffb100; color: black; }-->
 
-<!--.flash {-->
-<!--    width: 95%;-->
-<!--    margin: 15px auto;-->
-<!--    padding: 10px;-->
-<!--    border-radius: 6px;-->
-<!--    font-weight: bold;-->
+<!--header h2 {-->
+<!--  margin: 0;-->
+<!--  font-size: 1.5em;-->
 <!--}-->
-<!--.flash-success { background-color: #d1ffd1; color: green; }-->
-<!--.flash-error { background-color: #ffd1d1; color: red; }-->
 
-<!--.status-updated {-->
-<!--    background-color: #c8f7c5;-->
-<!--    color: green;-->
-<!--    font-weight: bold;-->
-<!--    padding: 6px 8px;-->
-<!--    border-radius: 5px;-->
+<!--.back-button {-->
+<!--  position: absolute;-->
+<!--  right: 20px;-->
+<!--  top: 12px;-->
+<!--  background-color: white;-->
+<!--  color: #004aad;-->
+<!--  border: none;-->
+<!--  padding: 8px 14px;-->
+<!--  font-weight: bold;-->
+<!--  border-radius: 8px;-->
+<!--  cursor: pointer;-->
+<!--  transition: 0.3s;-->
 <!--}-->
-<!--.status-not-updated {-->
-<!--    background-color: #ffd9d9;-->
-<!--    color: red;-->
-<!--    font-weight: bold;-->
-<!--    padding: 6px 8px;-->
-<!--    border-radius: 5px;-->
+<!--.back-button:hover {-->
+<!--  background-color: #e6ecff;-->
 <!--}-->
-<!--.row-highlight {-->
-<!--    background-color: #c8f7c5 !important;-->
-<!--    transition: background-color 1.5s ease;-->
+
+<!--.container {-->
+<!--  background: white;-->
+<!--  width: 95%;-->
+<!--  max-width: 1000px;-->
+<!--  margin: 30px auto;-->
+<!--  padding: 20px;-->
+<!--  border-radius: 10px;-->
+<!--  box-shadow: 0 3px 10px rgba(0,0,0,0.1);-->
+<!--}-->
+
+<!--.date-nav {-->
+<!--  display: flex;-->
+<!--  justify-content: center;-->
+<!--  align-items: center;-->
+<!--  margin-bottom: 20px;-->
+<!--}-->
+<!--.date-btn {-->
+<!--  padding: 8px 14px;-->
+<!--  border: none;-->
+<!--  background: #004aad;-->
+<!--  color: white;-->
+<!--  border-radius: 6px;-->
+<!--  cursor: pointer;-->
+<!--  margin: 0 10px;-->
+<!--}-->
+<!--.date-display {-->
+<!--  font-size: 1.1em;-->
+<!--  font-weight: bold;-->
+<!--}-->
+
+<!--.flex-area {-->
+<!--  display: flex;-->
+<!--  gap: 20px;-->
+<!--}-->
+
+<!--.student-list {-->
+<!--  width: 35%;-->
+<!--  max-height: 400px;-->
+<!--  overflow-y: auto;-->
+<!--  border-right: 2px solid #eee;-->
+<!--  padding-right: 15px;-->
+<!--}-->
+
+<!--.student-item {-->
+<!--  padding: 10px;-->
+<!--  background: #eef3ff;-->
+<!--  margin-bottom: 8px;-->
+<!--  border-radius: 6px;-->
+<!--  cursor: pointer;-->
+<!--  font-weight: 500;-->
+<!--}-->
+<!--.student-item:hover {-->
+<!--  background: #dce7ff;-->
+<!--}-->
+
+<!--.selected {-->
+<!--  background: #004aad !important;-->
+<!--  color: white;-->
+<!--}-->
+
+<!--.details-panel {-->
+<!--  width: 65%;-->
+<!--  padding: 15px;-->
+<!--  background: #fafcff;-->
+<!--  border-radius: 8px;-->
+<!--  min-height: 300px;-->
+<!--}-->
+
+<!--.status-tag {-->
+<!--  padding: 4px 10px;-->
+<!--  border-radius: 6px;-->
+<!--  font-weight: bold;-->
+<!--  display: inline-block;-->
+<!--  margin-bottom: 10px;-->
+<!--}-->
+
+<!--.present { background: #c8f7c5; color: green; }-->
+<!--.absent { background: #ffd1d1; color: red; }-->
+<!--.noclass { background: #d1e4ff; color: #004aad; }-->
+
+<!--.btn-submit {-->
+<!--  margin-top: 15px;-->
+<!--  padding: 10px 16px;-->
+<!--  border: none;-->
+<!--  background: #004aad;-->
+<!--  color: white;-->
+<!--  border-radius: 6px;-->
+<!--  cursor: pointer;-->
 <!--}-->
 <!--</style>-->
 <!--</head>-->
+
 <!--<body>-->
 
 <!--<header>-->
-<!--    <h2>Staff Attendance Dashboard</h2>-->
-<!--    <button onclick="window.location.href='/staff'">⟵ Dashboard</button>-->
+<!--  <h2>Staff Attendance Dashboard</h2>-->
+<!--  <button class="back-button" onclick="window.location.href='/staff'">⟵ Dashboard</button>-->
 <!--</header>-->
 
-<!--<h3>Update Attendance for {{ subject }}</h3>-->
+<!--<div class="container">-->
+<!--  <h3>Update Attendance for {{ subject }}</h3>-->
 
-<!--&lt;!&ndash; Flash messages &ndash;&gt;-->
-<!--{% with messages = get_flashed_messages(with_categories=true) %}-->
-<!--  {% if messages %}-->
-<!--    {% for category, message in messages %}-->
-<!--      <div class="flash {% if category=='success' %}flash-success{% else %}flash-error{% endif %}">-->
-<!--        {{ message }}-->
-<!--      </div>-->
-<!--    {% endfor %}-->
-<!--  {% endif %}-->
-<!--{% endwith %}-->
+<!--  <div class="date-nav">-->
+<!--    <button class="date-btn" id="prev-date">◀</button>-->
+<!--    <span class="date-display" id="date-display"></span>-->
+<!--    <button class="date-btn" id="next-date">▶</button>-->
+<!--  </div>-->
 
-<!--<table>-->
-<!--<thead>-->
-<!--<tr>-->
-<!--    <th>ID</th>-->
-<!--    <th>StudentID</th>-->
-<!--    <th>Date</th>-->
-<!--    <th>Time</th>-->
-<!--    <th>Subject</th>-->
-<!--    <th>Status</th>-->
-<!--    <th>Action</th>-->
-<!--    <th>Update Status</th>-->
-<!--    <th>Timestamp</th>-->
-<!--</tr>-->
-<!--</thead>-->
-<!--<tbody>-->
-<!--{% for record in records %}-->
-<!--<tr id="row-{{ loop.index0 }}">-->
-<!--    <td>{{ record.ID }}</td>-->
-<!--    <td>{{ record.StudentID }}</td>-->
-<!--    <td>{{ record.Date }}</td>-->
-<!--    <td>{{ record.Time }}</td>-->
-<!--    <td>{{ record.Subject }}</td>-->
-<!--    <td>-->
-<!--        <select name="status" id="status-{{ loop.index0 }}">-->
-<!--            <option value="Present" {% if record.Status=='Present' %}selected{% endif %}>Present</option>-->
-<!--            <option value="Absent" {% if record.Status=='Absent' %}selected{% endif %}>Absent</option>-->
-<!--            <option value="No Class" {% if record.Status=='No Class' %}selected{% endif %}>No Class</option>-->
-<!--        </select>-->
-<!--    </td>-->
-<!--    <td>-->
-<!--        <form method="POST" class="update-form" data-row="{{ loop.index0 }}">-->
-<!--            <input type="hidden" name="row_id" value="{{ loop.index0 }}">-->
-<!--            <button type="submit">Update</button>-->
-<!--        </form>-->
-<!--    </td>-->
-<!--    <td>-->
-<!--        <span id="update-status-{{ loop.index0 }}" class="{% if record.UpdateStatus=='✅ Updated' %}status-updated{% else %}status-not-updated{% endif %}">-->
-<!--            {% if record.UpdateStatus=='✅ Updated' %}Updated{% else %}Not Updated{% endif %}-->
-<!--        </span>-->
-<!--    </td>-->
-<!--    <td id="timestamp-{{ loop.index0 }}">{{ record.Timestamp }}</td>-->
-<!--</tr>-->
-<!--{% endfor %}-->
-<!--</tbody>-->
-<!--</table>-->
+<!--  <div class="flex-area">-->
+
+<!--    &lt;!&ndash; LEFT: student list &ndash;&gt;-->
+<!--    <div class="student-list" id="student-list"></div>-->
+
+<!--    &lt;!&ndash; RIGHT: detail panel &ndash;&gt;-->
+<!--    <div class="details-panel" id="details-panel">-->
+<!--      <p>Select a student from the left</p>-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</div>-->
 
 <!--<script>-->
-<!--document.querySelectorAll('.update-form').forEach(form => {-->
-<!--    form.addEventListener('submit', function(e){-->
-<!--        e.preventDefault();-->
-<!--        const rowId = this.dataset.row;-->
-<!--        const formData = new FormData(this);-->
-<!--        const selectedStatus = document.getElementById(`status-${rowId}`).value;-->
+<!--const records = {{ records|tojson }};-->
+<!--const uniqueDates = [...new Set(records.map(r => r.Date))].sort();-->
 
-<!--        // Ensure selected status is sent-->
-<!--        formData.set('status', selectedStatus);-->
+<!--let dateIndex = 0;-->
+<!--let selectedStudent = null;-->
 
-<!--        fetch("/staff/attendance", {-->
-<!--            method: "POST",-->
-<!--            body: formData,-->
-<!--            headers: { 'X-Requested-With': 'XMLHttpRequest' }-->
-<!--        })-->
-<!--        .then(response => response.json())-->
-<!--        .then(data => {-->
-<!--            if(data.success){-->
-<!--                // Update status badge-->
-<!--                const statusCell = document.getElementById(`update-status-${rowId}`);-->
-<!--                statusCell.textContent = 'Updated';-->
-<!--                statusCell.className = 'status-updated';-->
+<!--const dateDisplay = document.getElementById("date-display");-->
+<!--const studentListDiv = document.getElementById("student-list");-->
+<!--const detailsPanel = document.getElementById("details-panel");-->
 
-<!--                // Update timestamp cell-->
-<!--                const timestampCell = document.getElementById(`timestamp-${rowId}`);-->
-<!--                if(timestampCell) timestampCell.textContent = data.Timestamp;-->
+<!--function loadDate() {-->
+<!--  const date = uniqueDates[dateIndex];-->
+<!--  dateDisplay.textContent = date;-->
 
-<!--                // Highlight row temporarily-->
-<!--                const row = document.getElementById(`row-${rowId}`);-->
-<!--                row.classList.add('row-highlight');-->
-<!--                setTimeout(()=>row.classList.remove('row-highlight'),1500);-->
-<!--            } else {-->
-<!--                alert('Error: ' + data.error);-->
-<!--            }-->
-<!--        })-->
-<!--        .catch(err => alert('Request failed: ' + err));-->
-<!--    });-->
-<!--});-->
+<!--  const students = records.filter(r => r.Date === date);-->
+
+<!--  studentListDiv.innerHTML = "";-->
+
+<!--  let added = new Set();-->
+<!--  students.forEach(r => {-->
+<!--    if (!added.has(r.StudentID)) {-->
+<!--      added.add(r.StudentID);-->
+<!--      let div = document.createElement("div");-->
+<!--      div.className = "student-item";-->
+<!--      div.textContent = r.StudentID;-->
+<!--      div.onclick = () => loadDetails(r.StudentID);-->
+<!--      studentListDiv.appendChild(div);-->
+<!--    }-->
+<!--  });-->
+<!--}-->
+
+<!--function loadDetails(studentId) {-->
+<!--  selectedStudent = studentId;-->
+
+<!--  // highlight selected-->
+<!--  [...studentListDiv.children].forEach(el => el.classList.remove("selected"));-->
+<!--  [...studentListDiv.children].find(el => el.textContent === studentId).classList.add("selected");-->
+
+<!--  const date = uniqueDates[dateIndex];-->
+<!--  const rec = records.find(r => r.StudentID === studentId && r.Date === date);-->
+
+<!--  const statusColor =-->
+<!--      rec.Status === "Present" ? "present"-->
+<!--    : rec.Status === "Absent" ? "absent"-->
+<!--    : "noclass";-->
+
+<!--  detailsPanel.innerHTML = `-->
+<!--    <h3>${rec['Student Name']}</h3>-->
+<!--    <p><strong>Time:</strong> ${rec.Time}</p>-->
+<!--    <span class="status-tag ${statusColor}">Current: ${rec.Status}</span>-->
+
+<!--    <form id="update-form">-->
+<!--      <label><strong>Update Status:</strong></label><br>-->
+<!--      <select id="new-status" name="status" required>-->
+<!--        <option value="Present">Present</option>-->
+<!--        <option value="Absent">Absent</option>-->
+<!--        <option value="No Class">No Class</option>-->
+<!--      </select>-->
+<!--      <br>-->
+<!--      <button class="btn-submit" type="submit">Update Attendance</button>-->
+<!--    </form>-->
+
+<!--    <p id="update-msg"></p>-->
+<!--  `;-->
+
+<!--  const form = document.getElementById("update-form");-->
+<!--  form.addEventListener("submit", (e) => {-->
+<!--    e.preventDefault();-->
+<!--    updateAttendance(rec.Date, rec.StudentID);-->
+<!--  });-->
+<!--}-->
+
+<!--function updateAttendance(date, student) {-->
+<!--  const formData = new FormData();-->
+<!--  formData.append("date", date);-->
+<!--  formData.append("student", student);-->
+<!--  formData.append("status", document.getElementById("new-status").value);-->
+
+<!--  fetch("/staff/attendance", {-->
+<!--    method: "POST",-->
+<!--    body: formData,-->
+<!--    headers: { "X-Requested-With": "XMLHttpRequest" }-->
+<!--  })-->
+<!--  .then(r => r.json())-->
+<!--  .then(data => {-->
+<!--    const msg = document.getElementById("update-msg");-->
+<!--    if (data.success) {-->
+<!--      msg.innerHTML = "✅ Updated Successfully!";-->
+<!--      msg.style.color = "green";-->
+<!--    } else {-->
+<!--      msg.innerHTML = "❌ " + data.error;-->
+<!--      msg.style.color = "red";-->
+<!--    }-->
+<!--  });-->
+<!--}-->
+
+<!--document.getElementById("prev-date").onclick = () => {-->
+<!--  if (dateIndex > 0) dateIndex&#45;&#45;;-->
+<!--  loadDate();-->
+<!--};-->
+<!--document.getElementById("next-date").onclick = () => {-->
+<!--  if (dateIndex < uniqueDates.length - 1) dateIndex++;-->
+<!--  loadDate();-->
+<!--};-->
+
+<!--loadDate();-->
 <!--</script>-->
 
 <!--</body>-->
@@ -199,205 +685,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit Attendance - Staff</title>
-<style>
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f3f7fc;
-  margin: 0;
-  text-align: center;
-}
-header {
-  background-color: #004aad;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: center; /* center title */
-  align-items: center;
-  position: relative; /* to position button in corner */
-}
-header h2 {
-  margin: 0;
-  font-size: 1.5em;
-  text-align: center;
-  flex: 1;
-}
-header button {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 6px 12px;
-  font-size: 0.9em;
-  background: #ffffff;
-  color: #004aad;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-header button:hover {
-  background: #ffb100;
-  color: black;
-}
-.container {
-  background: white;
-  width: 90%;
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-select {
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 80%;
-      outline: none;
-      transition: 0.3s;
-    }
-  .back-button {
-    position: absolute;
-    right: 20px;
-    top: 12px;
-    background-color: white;
-    color: #004aad;
-    border: none;
-    padding: 8px 14px;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.back-button:hover {
-    background-color: #e6ecff;
-}
-.flash-success { background: #d1ffd1; color: green; padding: 10px; border-radius: 6px; }
-.flash-error { background: #ffd1d1; color: red; padding: 10px; border-radius: 6px; }
-#attendance-form { display: none; }
-.status-updated { background: #c8f7c5; color: green; font-weight: bold; padding: 6px; border-radius: 5px; }
-</style>
+  <meta charset="utf-8">
+  <title>Update Attendance</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f3f4f6; margin:0; padding:18px; }
+    .top-bar { display:flex; justify-content:space-between; align-items:center; background:#004aad; color:white; padding:12px; border-radius:6px; }
+    .back-btn { background:white; color:#004aad; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; font-weight:bold; }
+    .container { margin-top:14px; }
+    .date-row { display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .date-row .nav-btn { padding:8px 12px; border-radius:6px; background:#004aad; color:white; border:none; cursor:pointer; }
+    .date-row input[type="date"] { padding:8px; border-radius:6px; border:1px solid #aaa; }
+    #search { width:100%; padding:10px; margin:10px 0; border-radius:6px;border:1px solid #ccc; }
+    table { width:100%; border-collapse:collapse; background:white; border-radius:6px; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.06); }
+    th,td { padding:10px; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#4f46e5; color:white; }
+    tr:hover { background:#f8fafc; }
+    .updated-row { background:#d1fae5 !important; }
+    .status-select { padding:6px 8px; border-radius:6px; }
+    .update-btn { background:#16a34a; color:white; padding:6px 10px; border-radius:6px; border:none; cursor:pointer; }
+    .no-class-box { background:#fff3cd; padding:12px; border-radius:8px; margin-bottom:12px; }
+    .nc-btn { background:#ffb100; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; }
+    .small-muted { color:#666; font-size:13px; }
+  </style>
 </head>
 <body>
 
-<header>
-  <h2>Staff Attendance Dashboard</h2>
-  <button class="back-button" onclick="window.location.href='/staff'">⟵ Dashboard</button>
-</header>
+<div class="top-bar">
+  <div style="font-weight:bold; font-size:18px;">Student Attendance — {{ subject }} ({{ weekday }})</div>
+  <div>
+    <button class="back-btn" onclick="window.location.href='/staff'">⟵ Dashboard</button>
+  </div>
+</div>
 
 <div class="container">
-  <h3>Update Attendance for {{ subject }}</h3>
 
-  <!-- Flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="flash-{{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+  <!-- Date navigation -->
+  <div class="date-row">
+    <a href="{{ url_for('update_student_attendance', date=prev_date) }}"><button class="nav-btn">⬅ Prev</button></a>
+    <div style="font-weight:bold;" id="currentDateLabel">{{ current_date }}</div>
+    <a href="{{ url_for('update_student_attendance', date=next_date) }}"><button class="nav-btn">Next ➡</button></a>
 
-  <!-- Step 1: Select Date -->
-  <label><strong>Select Date:</strong></label><br>
-  <select id="date-select">
-    <option value="">-- Choose Date --</option>
-    {% for d in unique_dates %}
-      <option value="{{ d }}">{{ d }}</option>
-    {% endfor %}
-  </select>
-
-  <!-- Step 2: Select Student -->
-  <div id="student-select-container" style="display:none;">
-    <label><strong>Select Student:</strong></label><br>
-    <select id="student-select">
-      <option value="">-- Choose Student --</option>
-    </select>
+    <form method="GET" style="margin-left:10px;">
+      <input type="date" name="date" value="{{ current_date }}">
+      <button class="nav-btn" type="submit">Go</button>
+    </form>
   </div>
 
-  <!-- Step 3: Update -->
-  <form id="attendance-form" method="POST">
-    <label><strong>Status:</strong></label><br>
-    <select id="status" name="status">
-      <option value="Present">Present</option>
-      <option value="Absent">Absent</option>
-      <option value="No Class">No Class</option>
-    </select><br>
-    <button type="submit">Update Attendance</button>
-  </form>
+  <!-- No class today message (only if truly no timetable or students) -->
+  {% if records|length == 0 %}
+    <div class="no-class-box">
+      <div class="small-muted">No timetable or students found for {{ weekday }} / {{ subject }}.</div>
+      <form method="POST" style="display:inline;">
+        <input type="hidden" name="no_class" value="1">
+        <input type="hidden" name="date" value="{{ current_date }}">
+        <button class="nc-btn">Mark "No Class Today"</button>
+      </form>
+    </div>
+  {% endif %}
 
-  <p id="update-msg"></p>
+  <!-- Search -->
+  <input id="search" placeholder="Search by student or id..." oninput="filterTable()">
+
+  <!-- Attendance table -->
+  <table id="attendanceTable">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Student ID</th>
+        <th>Student Name</th>
+        <th>Time</th>
+        <th>Subject</th>
+        <th>Status</th>
+        <th>Update</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+        <tr id="row-{{ r.SheetRow }}" class="{% if r.UpdateStatus == 'Updated' %}updated-row{% endif %}">
+          <td>{{ loop.index }}</td>
+          <td class="sid">{{ r.StudentID }}</td>
+          <td class="sname">{{ r.StudentName }}</td>
+          <td class="stime">{{ r.Time }}</td>
+          <td class="ssubj">{{ r.Subject }}</td>
+          <td>
+            {% if r.StudentID %}
+            <select id="status-{{ r.SheetRow }}" class="status-select">
+              <option value="Present" {% if r.Status=='Present' %}selected{% endif %}>Present</option>
+              <option value="Absent" {% if r.Status=='Absent' %}selected{% endif %}>Absent</option>
+              <option value="No Class" {% if r.Status=='No Class' %}selected{% endif %}>No Class</option>
+            </select>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.StudentID %}
+            <button class="update-btn" onclick="ajaxUpdate({{ r.SheetRow }}, '{{ r.StudentID }}', '{{ r.Date }}', '{{ r.Time }}', '{{ r.Subject }}', event)">Update</button>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 </div>
 
 <script>
-const records = {{ records|tojson }};
-const dateSelect = document.getElementById('date-select');
-const studentContainer = document.getElementById('student-select-container');
-const studentSelect = document.getElementById('student-select');
-const attendanceForm = document.getElementById('attendance-form');
-const updateMsg = document.getElementById('update-msg');
-
-let selectedDate = '';
-let selectedStudent = '';
-
-dateSelect.addEventListener('change', () => {
-  selectedDate = dateSelect.value;
-  studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
-
-  if (selectedDate) {
-    const students = records
-      .filter(r => r.Date === selectedDate)
-      .map(r => r.StudentID);
-    const uniqueStudents = [...new Set(students)];
-    uniqueStudents.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s;
-      studentSelect.appendChild(opt);
-    });
-    studentContainer.style.display = 'block';
-    attendanceForm.style.display = 'none';
-  } else {
-    studentContainer.style.display = 'none';
-    attendanceForm.style.display = 'none';
-  }
-});
-
-studentSelect.addEventListener('change', () => {
-  selectedStudent = studentSelect.value;
-  attendanceForm.style.display = selectedStudent ? 'block' : 'none';
-});
-
-attendanceForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const formData = new FormData(attendanceForm);
-  formData.append('date', selectedDate);
-  formData.append('student', selectedStudent);
-
-  fetch('/staff/attendance', {
-    method: 'POST',
-    body: formData,
-    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      updateMsg.textContent = '✅ Attendance updated successfully!';
-      updateMsg.className = 'status-updated';
-    } else {
-      updateMsg.textContent = '❌ ' + data.error;
-      updateMsg.className = 'flash-error';
-    }
-  })
-  .catch(err => {
-    updateMsg.textContent = '⚠️ Request failed: ' + err;
-    updateMsg.className = 'flash-error';
+// Filter/search
+function filterTable(){
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('#attendanceTable tbody tr').forEach(tr => {
+    const id = (tr.querySelector('.sid')||{innerText:''}).innerText.toLowerCase();
+    const name = (tr.querySelector('.sname')||{innerText:''}).innerText.toLowerCase();
+    tr.style.display = (id.includes(q) || name.includes(q)) ? '' : 'none';
   });
-});
+}
+
+// AJAX update
+async function ajaxUpdate(sheetRow, studentId, date, timeSlot, subject, e){
+  e && e.preventDefault();
+  const sel = document.getElementById('status-' + sheetRow);
+  if(!sel) return alert('Status selector missing');
+  const status = sel.value;
+
+  const fd = new FormData();
+  fd.append('student', studentId);
+  fd.append('date', date);
+  fd.append('time', timeSlot);
+  fd.append('subject', subject);
+  fd.append('status', status);
+
+  try {
+    const url = window.location.pathname + '?date=' + encodeURIComponent(date);
+    const resp = await fetch(url, {
+      method: 'POST',
+      body: fd,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    const data = await resp.json();
+    if(data.success){
+      const row = document.getElementById('row-' + sheetRow);
+      if(row) row.classList.add('updated-row');
+    } else {
+      alert('Update failed: ' + (data.error || 'unknown'));
+    }
+  } catch(err){
+    alert('Request failed: ' + err);
+  }
+}
 </script>
 
 </body>
 </html>
-

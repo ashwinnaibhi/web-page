@@ -60,3 +60,4 @@ Desktop.ini
 *.lnk
 ~$*
 service_account.json
+firebase_admin.json
