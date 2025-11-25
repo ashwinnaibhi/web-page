@@ -53,25 +53,26 @@
     </tr>
   </thead>
   <tbody>
-    {% for test in tests %}
-    <tr>
-      <td>{{ test.Subject }}</td>
-      <td>{{ test.Lecturer }}</td>
-      <td>{{ test.Date }}</td>
-      <td>{{ test['Time Limit'] }}</td>
-      <td>
-        {% if test['Test Link'] %}
-          {% set button_text = test.get('Button Text') or 'Take Test' %}
-          <a href="{{ test['Test Link'] }}" target="_blank">
-            <button>{{ button_text }}</button>
-          </a>
-        {% else %}
-          No Test
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+{% for test in tests %}
+<tr>
+  <td>{{ test.Subject }}</td>
+  <td>{{ test.Lecturer }}</td>
+  <td>{{ test.Date }}</td>
+  <td>{{ test.TimeLimit }}</td>
+
+  <td>
+    {% if test.TestLink %}
+      <a href="{{ test.TestLink }}" target="_blank">
+        <button>{{ test.ButtonText or "Take Test" }}</button>
+      </a>
+    {% else %}
+      No Test
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+
 </table>
 {% else %}
 <div id="noTest">There is no test available.</div>

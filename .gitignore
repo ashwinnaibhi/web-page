@@ -61,3 +61,6 @@ Desktop.ini
 ~$*
 service_account.json
 firebase_admin.json
+gsheet_to_firebase.py
+
+.idea

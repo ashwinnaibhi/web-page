@@ -201,3 +201,149 @@ def create_attendance(student_id: str, date: str, time: str, subject: str, statu
         "Status": status,
         "Timestamp": timestamp
     })
+
+def get_mcq_tests():
+    """
+    Returns all MCQ tests from Firestore.
+    Collection: MCQ_Tests
+    """
+    tests = []
+    docs = db.collection("MCQs").stream()
+
+    for d in docs:
+        data = d.to_dict()
+        data["TestID"] = d.id
+        tests.append(data)
+
+    return tests
+
+def upload_mcq_test(subject, lecturer_name, date, time_limit, test_link, button_text="Take Test"):
+    """
+    Uploads a new MCQ test to Firestore.
+    Collection: MCQ_Tests
+    """
+    doc_ref = db.collection("MCQs").document()
+
+    doc_ref.set({
+        "Subject": subject,
+        "Lecturer": lecturer_name,
+        "Date": date,
+        "TimeLimit": time_limit,
+        "TestLink": test_link,
+        "ButtonText": button_text
+    })
+
+    return True
+
+def get_fees(usn: str):
+    """
+    Returns all fee records for a given student (USN).
+    Collection: Fees
+    Query: Filter by USN
+    """
+    records = []
+    docs = db.collection("Fees").where("USN", "==", usn).stream()
+
+    for d in docs:
+        data = d.to_dict()
+        data["RecordID"] = d.id
+        records.append(data)
+
+    return records
+
+def get_timetable():
+    """
+    Fetch timetable data from Firestore collection 'Timetables'
+    Each document = 1 row in sheet
+    """
+    docs = db.collection("Timetables").stream()
+    rows = []
+
+    for d in docs:
+        rows.append(d.to_dict())
+
+    # Sort rows by Day/Time order (Mon → Sat)
+    day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    rows.sort(key=lambda x: day_order.index(x.get("Day", ""))
+              if x.get("Day", "") in day_order else 999)
+
+    return rows
+
+
+
+def get_marks(usn: str = None):
+    """
+    Returns marks.
+    If USN is passed → return marks only for that student.
+    If no USN → return all marks.
+    Firestore Collection: "Marks"
+    """
+    records = []
+
+    if usn:
+        print("Fetching marks for USN:", usn)
+        docs = db.collection("Marks").where("`Student USN`", "==", usn).stream()
+    else:
+        print("Fetching ALL marks")
+        docs = db.collection("Marks").stream()
+
+    for doc in docs:
+        data = doc.to_dict()
+        data["RecordID"] = doc.id
+        records.append(data)
+
+    return records
+
+
+# def get_marks(usn: str = None):
+#     """
+#     Returns marks.
+#     If USN is passed → return marks only for that student.
+#     If no USN → return all marks.
+#     Firestore Collection: "Marks"
+#     """
+#     records = []
+#
+#     if usn:
+#         print("If used")
+#         docs = db.collection("Marks").where("Student USN", "==", usn).stream()
+#     else:
+#         print("else used")
+#         docs = db.collection("Marks").stream()
+#
+#     for doc in docs:
+#         data = doc.to_dict()
+#         data["RecordID"] = doc.id
+#         records.append(data)
+#
+#     return records
+
+
+def save_marks(usn: str, subject: str, test: str, marks: int):
+    """
+    Save or update a marks record.
+    """
+    doc_id = f"{usn}_{subject}_{test}".replace(" ", "_")
+    db.collection("Marks").document(doc_id).set({
+        "Student USN": usn,
+        "Subject": subject,
+        "Test": test,
+        "Marks": marks
+    })
+    return True
+
+def get_parent(parent_id: str):
+    """
+    Returns parent record from Firestore.
+    Firestore Collection: Parents
+    Document ID = parent_id
+    """
+    doc_ref = db.collection("Parents").document(parent_id)
+    doc = doc_ref.get()
+
+    if not doc.exists:
+        return {}
+
+    data = doc.to_dict()
+    data["ParentID"] = parent_id
+    return data

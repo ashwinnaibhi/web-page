@@ -1,3 +1,83 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--<meta charset="UTF-8">-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--<title>Marks</title>-->
+<!--<style>-->
+<!--body {-->
+<!--  font-family: 'Poppins', sans-serif;-->
+<!--  background: #f3f7fc;-->
+<!--  margin: 0;-->
+<!--}-->
+<!--.container {-->
+<!--  width: 90%;-->
+<!--  max-width: 800px;-->
+<!--  margin: 30px auto;-->
+<!--  background: white;-->
+<!--  padding: 20px;-->
+<!--  border-radius: 12px;-->
+<!--  box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--}-->
+<!--table {-->
+<!--  width: 100%;-->
+<!--  border-collapse: collapse;-->
+<!--  margin-top: 20px;-->
+<!--}-->
+<!--table, th, td {-->
+<!--  border: 1px solid #ccc;-->
+<!--}-->
+<!--th, td {-->
+<!--  padding: 10px;-->
+<!--  text-align: left;-->
+<!--}-->
+<!--.back-btn {-->
+<!--  display: inline-block;-->
+<!--  background: #004aad;-->
+<!--  color: #fff;-->
+<!--  text-decoration: none;-->
+<!--  padding: 8px 14px;-->
+<!--  border-radius: 6px;-->
+<!--  font-weight: 500;-->
+<!--  transition: 0.3s;-->
+<!--}-->
+<!--.back-btn:hover {-->
+<!--  background: #ffb100;-->
+<!--  color: #000;-->
+<!--}-->
+<!--</style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+
+<!--  <h2>Marks</h2>-->
+
+<!--  <table>-->
+<!--    <tr>-->
+<!--      <th>USN</th>-->
+<!--      <th>Name</th>-->
+<!--      <th>Subject</th>-->
+<!--      <th>Marks</th>-->
+<!--      <th>Updated By</th>-->
+<!--      <th>Timestamp</th>-->
+<!--    </tr>-->
+<!--    {% for m in marks %}-->
+<!--    <tr>-->
+<!--      <td>{{ m['Student USN'] }}</td>-->
+<!--      <td>{{ m['Student Name'] }}</td>-->
+<!--      <td>{{ m['Subject'] }}</td>-->
+<!--      <td>{{ m['Marks'] }}</td>-->
+<!--      <td>{{ m['Updated By'] }}</td>-->
+<!--      <td>{{ m['Timestamp'] }}</td>-->
+<!--    </tr>-->
+<!--    {% endfor %}-->
+<!--  </table>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +87,38 @@
 <style>
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f3f7fc;
+  background: linear-gradient(135deg, #dce9ff, #f3f7fc);
   margin: 0;
 }
+
+/* Header */
+.header {
+  background: #004aad;
+  color: white;
+  padding: 15px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Dashboard Button */
+.back-button {
+  background: #ffb100;
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.back-button:hover {
+  background: #fff;
+  color: #004aad;
+}
+
 .container {
   width: 90%;
   max-width: 800px;
@@ -19,6 +128,16 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
+
+/* Centered Heading with background */
+h2 {
+  text-align: center;
+  background: #004aad;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -27,27 +146,29 @@ table {
 table, th, td {
   border: 1px solid #ccc;
 }
-th, td {
+
+/* TH background color */
+th {
+  background: #004aad;
+  color: white;
+  padding: 10px;
+}
+td {
   padding: 10px;
   text-align: left;
-}
-.back-btn {
-  display: inline-block;
-  background: #004aad;
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: 0.3s;
-}
-.back-btn:hover {
-  background: #ffb100;
-  color: #000;
 }
 </style>
 </head>
 <body>
+
+<!-- Header Section -->
+<div class="header">
+  <div>JSS Academy of Technical Education, Bengaluru</div>
+
+  <a href="{% if role == 'parent' %}{{ url_for('parent_dashboard') }}{% else %}{{ url_for('student_dashboard') }}{% endif %}?student_usn={{ usn }}">
+      <button class="back-button">← Dashboard</button>
+  </a>
+</div>
 
 <div class="container">
 
@@ -62,6 +183,7 @@ th, td {
       <th>Updated By</th>
       <th>Timestamp</th>
     </tr>
+
     {% for m in marks %}
     <tr>
       <td>{{ m['Student USN'] }}</td>
@@ -77,3 +199,4 @@ th, td {
 
 </body>
 </html>
+
