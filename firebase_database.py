@@ -295,42 +295,10 @@ def get_marks(usn: str = None):
     return records
 
 
-# def get_marks(usn: str = None):
-#     """
-#     Returns marks.
-#     If USN is passed → return marks only for that student.
-#     If no USN → return all marks.
-#     Firestore Collection: "Marks"
-#     """
-#     records = []
-#
-#     if usn:
-#         print("If used")
-#         docs = db.collection("Marks").where("Student USN", "==", usn).stream()
-#     else:
-#         print("else used")
-#         docs = db.collection("Marks").stream()
-#
-#     for doc in docs:
-#         data = doc.to_dict()
-#         data["RecordID"] = doc.id
-#         records.append(data)
-#
-#     return records
 
 
-def save_marks(usn: str, subject: str, test: str, marks: int):
-    """
-    Save or update a marks record.
-    """
-    doc_id = f"{usn}_{subject}_{test}".replace(" ", "_")
-    db.collection("Marks").document(doc_id).set({
-        "Student USN": usn,
-        "Subject": subject,
-        "Test": test,
-        "Marks": marks
-    })
-    return True
+
+
 
 def get_parent(parent_id: str):
     """
@@ -347,3 +315,61 @@ def get_parent(parent_id: str):
     data = doc.to_dict()
     data["ParentID"] = parent_id
     return data
+
+
+
+def save_marks(usn: str, subject: str, test: str, marks: int, staff_id: str):
+    doc_id = f"{usn}_{subject}_{test}".replace(" ", "_")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Find student record
+    student_record = next((s for s in list_all_students() if s["USN"] == usn), None)
+
+    db.collection("Marks").document(doc_id).set({
+        "Student USN": usn,
+        "Student Name": student_record["Student Name"],
+        "Subject": subject,
+        "Test": test,
+        "Marks": marks,
+        "Updated By": staff_id,          # ← now correct
+        "Timestamp": timestamp
+    })
+    return True
+
+def get_marks_by_subject(subject):
+    """
+    Returns all marks belonging to the given subject.
+    Firestore collection: 'Marks'
+    """
+    marks_ref = db.collection("Marks")
+    query = marks_ref.where("Subject", "==", subject).stream()
+
+    records = []
+    for doc in query:
+        data = doc.to_dict()
+        data["id"] = doc.id   # store Firestore document ID
+        records.append(data)
+
+    return records
+
+
+def update_marks(mark_id, marks, student_name, updated_by):
+    doc_ref = db.collection("Marks").document(mark_id)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    update_data = {
+        "Marks": marks,
+        "Student Name": student_name,   # ✔ FIXED
+        "Updated By": updated_by,
+        "Timestamp": timestamp
+    }
+
+    doc_ref.update(update_data)
+
+def get_mark_by_id(mark_id):
+    doc = db.collection("Marks").document(mark_id).get()
+    if doc.exists:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        return data
+    return None

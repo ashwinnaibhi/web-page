@@ -1320,62 +1320,7 @@ def update_student_attendance():
     )
 
 
-# ---------------- STAFF MARKS UPLOAD ----------------
-@app.route('/upload_marks', methods=['GET', 'POST'])
-def upload_marks():
-    if 'user_id' not in session or session.get('role') != 'staff':
-        return redirect(url_for('login_page'))
 
-    staff_id = session['user_id']
-    staff_info = fdb.get_staff(staff_id)
-    subject = staff_info.get('Subject') if staff_info else None
-
-    students_list = fdb.list_students_by_subject(subject)
-    if request.method == 'POST':
-        exam_type = request.form['exam_type']
-        date = request.form['date']
-        usns = request.form.getlist('student_usn')
-        marks = request.form.getlist('marks')
-
-        for usn, mark in zip(usns, marks):
-            fdb.upload_marks(usn, subject, exam_type, date, mark)
-
-        return render_template('upload_marks.html',
-                               subject=subject,
-                               students=students_list,
-                               message="Marks uploaded successfully!")
-
-    return render_template('upload_marks.html', subject=subject, students=students_list)
-
-
-# ---------------- EDIT MARKS ----------------
-@app.route('/edit_marks', methods=['GET', 'POST'])
-def edit_marks():
-    if 'user_id' not in session or session.get('role') != 'staff':
-        return redirect(url_for('login_page'))
-
-    staff_id = session['user_id']
-    staff_info = fdb.get_staff(staff_id)
-    subject = staff_info.get('Subject') if staff_info else None
-
-    marks_records = fdb.get_marks_by_subject(subject)
-
-    if request.method == 'POST':
-        record_ids = request.form.getlist('record_id')
-        updated_marks = request.form.getlist('marks')
-
-        for rec_id, mark in zip(record_ids, updated_marks):
-            fdb.update_marks(rec_id, mark)
-
-        return render_template('edit_marks.html',
-                               subject=subject,
-                               marks=marks_records,
-                               message="Marks updated successfully!")
-
-    return render_template('edit_marks.html', subject=subject, marks=marks_records)
-
-
-# ---------------- MCQ MANAGEMENT FOR STAFF ----------------
 @app.route('/mcq_list')
 def mcq_list():
     if 'user_id' not in session or session.get('role') != 'staff':
@@ -1385,8 +1330,142 @@ def mcq_list():
     staff_info = fdb.get_staff(staff_id)
     subject = staff_info.get('Subject') if staff_info else None
 
-    mcq_tests = fdb.get_mcq_tests(subject)
+    mcq_tests = fdb.get_mcq_tests()
     return render_template('mcq_list.html', subject=subject, tests=mcq_tests)
+
+
+@app.route('/staff/upload_marks', methods=['GET', 'POST'])
+def upload_marks():
+    if 'user_id' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_page'))
+
+    staff_id = session.get('user_id')
+
+    # ---------------------------
+    # ⭐ Get Staff Subject
+    # ---------------------------
+    staff_record = fdb.get_staff(staff_id)
+    if not staff_record:
+        flash("Staff record not found", "error")
+        return redirect(url_for('login_page'))
+
+    subject = staff_record.get("Subject")
+
+    # ---------------------------
+    # ⭐ Fetch all students & subject marks
+    # ---------------------------
+    student_records = fdb.list_all_students()
+    subject_marks = fdb.get_marks_by_subject(subject)
+
+    # ---------------------------
+    # ⭐ POST: Add or update marks
+    # ---------------------------
+    if request.method == 'POST':
+        student_usn = request.form.get('usn', '').strip()
+        marks_raw = request.form.get('marks', '').strip()
+
+        # Validate input
+        if not student_usn:
+            flash("USN is required", "error")
+            return redirect(url_for('upload_marks'))
+
+        student = next((s for s in student_records if s["USN"] == student_usn), None)
+        if not student:
+            flash(f"Student {student_usn} not found", "error")
+            return redirect(url_for('upload_marks'))
+
+        if not marks_raw.isdigit():
+            flash("Marks must be numeric", "error")
+            return redirect(url_for('upload_marks'))
+
+        marks = int(marks_raw)
+
+        # Check if record exists
+        existing = next(
+            (m for m in subject_marks if m["Student USN"] == student_usn),
+            None
+        )
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if existing:
+            # update existing marks
+            fdb.update_marks(
+                existing["id"],
+                marks=marks,
+                student_name=student["Student Name"],
+                updated_by=staff_id
+            )
+            flash(f"Updated marks for {student_usn} ({subject})", "success")
+        else:
+            # Create new record (using your helper save_marks)
+            # You can choose “IA1”, “IA2”, or “Final” as test
+            #fdb.save_marks(student_usn, subject, "IA1", marks)
+            fdb.save_marks(student_usn, subject, "IA1", marks, staff_id)
+
+            flash(f"Added marks for {student_usn} ({subject})", "success")
+
+        return redirect(url_for('upload_marks'))
+
+    # ---------------------------
+    # ⭐ CLASS FILTER (first, second, third, fail)
+    # ---------------------------
+    class_filter = request.args.get("class_filter")
+
+    def classify(score: int):
+        if score >= 60: return "first"
+        if score >= 50: return "second"
+        if score >= 35: return "third"
+        return "fail"
+
+    if class_filter:
+        subject_marks = [
+            m for m in subject_marks
+            if classify(int(m["Marks"])) == class_filter
+        ]
+
+    return render_template(
+        'upload_marks.html',
+        marks=subject_marks,
+        subject=subject,
+        student_records=student_records
+    )
+
+
+@app.route('/edit_marks', methods=['GET', 'POST'])
+def edit_marks():
+    if 'user_id' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_page'))
+
+    staff_id = session['user_id']
+    staff_info = fdb.get_staff(staff_id)
+    subject = staff_info.get('Subject')
+
+    # Read mark_id from URL
+    mark_id = request.args.get("mark_id")
+
+    if not mark_id:
+        return "Invalid mark ID", 400
+
+    # Get the single record by ID
+    record = fdb.get_mark_by_id(mark_id)
+
+    if not record:
+        return "Record not found", 404
+
+    if request.method == 'POST':
+        marks = int(request.form.get('marks'))
+
+        fdb.update_marks(
+            mark_id=mark_id,
+            marks=marks,
+            student_name=record["Student Name"],
+            updated_by=staff_id
+        )
+
+        return redirect(url_for('upload_marks'))
+
+    return render_template('edit_marks.html', mark=record)
 
 
 # --------------------- End ---------------------
